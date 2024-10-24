@@ -1,0 +1,222 @@
+{
+    "tileArray": [
+        {
+            "path": "Tile Palette/TP Grass",
+            "name": "Grass",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Grass 0", "weight": 0.7},
+                {"name": "TX Tileset Grass Flower 6", "weight": 0.3}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["Grass", "LeftDownWall", "MidDownWall", "RightDownWall", "UpSide"] },
+                {"NSWE": "S","tiles": ["Grass", "LeftUpCorn", "UpSide", "RightUpCorn", "MidUpWall"]},
+                {"NSWE": "W","tiles": ["Grass","LeftSide", "RightUpCorn", "RightSide", "RightUpWall", "RightDownWall"]},
+                {"NSWE": "E","tiles": ["Grass", "LeftUpCorn","LeftSide","LeftUpWall","LeftDownWall"]},
+                {"NSWE": "NW", "tiles":["Grass", "RightDownWall", "RightUpWall", "RightSide", "RightUpCorn", "LeftSide","LeftUpCorn","UpSide", "MidDownWall", "LeftDownWall"]},
+                {"NSWE": "NE", "tiles":["Grass", "RightDownWall", "RightSide", "RightUpCorn", "LeftSide","LeftUpCorn","UpSide", "MidDownWall", "LeftDownWall", "LeftUpWall"]},
+                {"NSWE": "SW", "tiles":["Grass","UpSide", "LeftUpCorn", "RightUpCorn", "LeftSide","RightSide", "LeftUpWall","MidUpWall","RightUpWall","RightDownWall"]},
+                {"NSWE": "SE", "tiles":["Grass","UpSide", "LeftUpCorn", "RightUpCorn", "LeftSide","RightSide", "LeftUpWall","MidUpWall","RightUpWall","LeftDownWall"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "LeftUpCorn",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_0", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["Grass"] },
+                {"NSWE": "S","tiles": ["LeftSide", "LeftUpWall"]},
+                {"NSWE": "W","tiles": ["Grass"]},
+                {"NSWE": "E","tiles": ["RightUpCorn", "UpSide"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["Grass", "RightSide", "RightUpWall", "MidUpWall"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "UpSide",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_1", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["Grass"] },
+                {"NSWE": "S","tiles": ["Grass", "MidUpWall"]},
+                {"NSWE": "W","tiles": ["LeftUpCorn", "UpSide"]},
+                {"NSWE": "E","tiles": ["UpSide", "RightUpCorn"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["MidUpWall","LeftUpWall", "LeftSide", "Grass"]},
+                {"NSWE": "SE", "tiles":["MidUpWall", "RightUpWall","Grass", "RightSide"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "RightUpCorn",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_54", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["Grass"] },
+                {"NSWE": "S","tiles": ["RightSide", "RightUpWall"]},
+                {"NSWE": "W","tiles": ["UpSide", "LeftUpCorn"]},
+                {"NSWE": "E","tiles": ["Grass"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["Grass", "LeftSide","LeftUpWall"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "RightSide",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_26", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["RightSide", "RightUpCorn"] },
+                {"NSWE": "S","tiles": ["RightSide", "RightUpWall"]},
+                {"NSWE": "W","tiles": ["Grass"]},
+                {"NSWE": "E","tiles": ["Grass"]},
+                {"NSWE": "NW", "tiles":["Grass", "UpSide", "LeftUpCorn"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["Grass", "LeftUpWall", "MidUpWall", "LeftSide"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "LeftUpWall",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_15", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["LeftSide", "LeftUpCorn"] },
+                {"NSWE": "S","tiles": ["LeftDownWall"]},
+                {"NSWE": "W","tiles": ["Grass"]},
+                {"NSWE": "E","tiles": ["MidUpWall"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["Grass", "UpSide","RightUpCorn", "RightSide"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["MidDownWall", "RightDownWall"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "LeftDownWall",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_23", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["LeftUpWall"] },
+                {"NSWE": "S","tiles": ["Grass"]},
+                {"NSWE": "W","tiles": ["Grass"]},
+                {"NSWE": "E","tiles": ["MidDownWall"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["MidUpWall", "RightUpWall"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "MidUpWall",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_16", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["Grass", "UpSide"] },
+                {"NSWE": "S","tiles": ["MidDownWall"]},
+                {"NSWE": "W","tiles": ["LeftUpWall", "MidUpWall"]},
+                {"NSWE": "E","tiles": ["RightUpWall","MidUpWall"]},
+                {"NSWE": "NW", "tiles":["Grass", "LeftSide", "LeftUpCorn", "UpSide"]},
+                {"NSWE": "NE", "tiles":["Grass", "RightSide", "RightUpCorn", "UpSide"]},
+                {"NSWE": "SW", "tiles":["MidDownWall", "LeftDownWall"]},
+                {"NSWE": "SE", "tiles":["MidDownWall","RightDownWall"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "MidDownWall",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_24", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["MidUpWall"] },
+                {"NSWE": "S","tiles": ["Grass"]},
+                {"NSWE": "W","tiles": ["MidDownWall", "LeftDownWall"]},
+                {"NSWE": "E","tiles": ["MidDownWall", "RightDownWall"]},
+                {"NSWE": "NW", "tiles":["MidUpWall","LeftUpWall"]},
+                {"NSWE": "NE", "tiles":["MidUpWall", "RightUpWall"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "RightUpWall",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_17", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["RightSide", "RightUpCorn"] },
+                {"NSWE": "S","tiles": ["RightDownWall"]},
+                {"NSWE": "W","tiles": ["MidUpWall", "LeftUpWall"]},
+                {"NSWE": "E","tiles": ["Grass"]},
+                {"NSWE": "NW", "tiles":["Grass", "UpSide","LeftSide", "LeftUpCorn"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["MidDownWall","LeftDownWall"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "RightDownWall",
+            "weight": 1,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_25", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["RightUpWall"] },
+                {"NSWE": "S","tiles": ["Grass"]},
+                {"NSWE": "W","tiles": ["MidDownWall", "LeftDownWall"]},
+                {"NSWE": "E","tiles": ["Grass"]},
+                {"NSWE": "NW", "tiles":["MidUpWall", "LeftUpWall"]},
+                {"NSWE": "NE", "tiles":["Grass"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["Grass"]}
+            ]
+        },
+        {
+            "path": "Tile Palette/TP Wall",
+            "name": "LeftSide",
+            "weight": 0.5,
+            "variantWeights": [
+                {"name": "TX Tileset Wall_8", "weight": 1}
+            ],
+            "neighbors": [
+                {"NSWE": "N","tiles": ["LeftSide", "LeftUpCorn"] },
+                {"NSWE": "S","tiles": ["LeftSide", "LeftUpWall"]},
+                {"NSWE": "W","tiles": ["Grass"]},
+                {"NSWE": "E","tiles": ["Grass", "RightSide"]},
+                {"NSWE": "NW", "tiles":["Grass"]},
+                {"NSWE": "NE", "tiles":["RightSide", "RightUpCorn", "UpSide"]},
+                {"NSWE": "SW", "tiles":["Grass"]},
+                {"NSWE": "SE", "tiles":["Grass", "MidUpWall", "RightUpWall", "RightSide"]}
+            ]
+        }
+    ]
+
+}

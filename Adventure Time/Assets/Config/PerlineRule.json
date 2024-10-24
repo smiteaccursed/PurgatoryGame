@@ -1,0 +1,53 @@
+{
+    "tiles": [
+        {
+           "path": "Tile Palette/TP Grass",
+            "name": "Grass", 
+            "variantWeights": [
+                {"name": "TX Tileset Grass 0", "weight": 0.7},
+                {"name": "TX Tileset Grass 1", "weight": 0.7},
+                {"name": "TX Tileset Grass 2", "weight": 0.7},
+                {"name": "TX Tileset Grass 3", "weight": 0.7},
+                {"name": "TX Tileset Grass 4", "weight": 0.7},
+                {"name": "TX Tileset Grass 5", "weight": 0.7},
+                {"name": "TX Tileset Grass 6", "weight": 0.7},
+                {"name": "TX Tileset Grass 7", "weight": 0.7},
+                {"name": "TX Tileset Grass 8", "weight": 0.7},
+                {"name": "TX Tileset Grass 9", "weight": 0.7},
+                {"name": "TX Tileset Grass 10", "weight": 0.7},
+                {"name": "TX Tileset Grass 11", "weight": 0.7},
+                {"name": "TX Tileset Grass 12", "weight": 0.7},
+                {"name": "TX Tileset Grass 13", "weight": 0.7},
+                {"name": "TX Tileset Grass 14", "weight": 0.7},
+                {"name": "TX Tileset Grass 15", "weight": 0.7},
+                {"name": "TX Tileset Grass Flower 0", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 1", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 2", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 3", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 4", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 5", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 6", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 7", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 8", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 9", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 10", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 11", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 12", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 13", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 14", "weight": 0.3},
+                {"name": "TX Tileset Grass Flower 15", "weight": 0.3}
+            ],
+            "tileTag":"Floor"
+        }       
+    ],
+    "sprites":[
+        {
+            "path": "Texture",
+            "name": "MidDownWall", 
+            "variantWeights": [
+                {"name": "TX Tileset Stone Ground", "weight": 1}
+            ],
+            "tileTag":"Wall"
+        }
+    ]
+}
