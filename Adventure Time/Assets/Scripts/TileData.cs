@@ -9,6 +9,7 @@ public class TileData
     public string tileTag;
     public string path;
     public string name;
+    private bool sameWeight=true;
     public List<VariantWeight> variantWeights = new List<VariantWeight>();
     [System.NonSerialized]
     public List<Tile> loadedTiles = new List<Tile>();
@@ -28,6 +29,14 @@ public class TileData
                 Debug.LogWarning($"Tile not found at path: {path}/{variant.name}");
             }
         }
+        double firstValue = variantWeights[0].weight;
+        for(int i=0; i<variantWeights.Count;i++)
+        {
+            if(firstValue!=variantWeights[i].weight)
+            {
+                sameWeight = false;
+            }
+        }
     }
 
     public Tile GetTile()
@@ -37,7 +46,11 @@ public class TileData
             Debug.LogError("No loaded tiles available!");
             return null;
         }
-
+        if(sameWeight==true)
+        {
+            int rnd = Random.Range(0, loadedTiles.Count);
+            return loadedTiles[rnd];
+        }
         double totalWeight = 0;
         foreach (var variant in variantWeights)
         {

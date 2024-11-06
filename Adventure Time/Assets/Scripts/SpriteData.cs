@@ -15,15 +15,17 @@ public class SpriteData
     public string path;
     public string name;
     public List<VariantWeight> variantWeights = new List<VariantWeight>();
+    public int bitMask;
+    public int bitCount;
     [System.NonSerialized]
     public List<Sprite> loadedSprite = new List<Sprite>();
 
-    public void LoadSprite()
+    public void LoadSprite(SpriteSheet sprites)
     {
         loadedSprite.Clear();
         foreach (var variant in variantWeights)
         {
-            Sprite sprite = Resources.Load<Sprite>(path + "/" + variant.name);
+            Sprite sprite = sprites.GetSpriteFromSheet(variant.name);
             if (sprite != null)
             {
                 loadedSprite.Add(sprite);
@@ -42,7 +44,10 @@ public class SpriteData
             Debug.LogError("No loaded sprites available!");
             return null;
         }
-
+        if(loadedSprite.Count==1)
+        {
+            return loadedSprite[0];
+        }
         double totalWeight = 0;
         foreach (var variant in variantWeights)
         {
@@ -70,5 +75,27 @@ public class SpriteData
         }
 
         return loadedSprite[0];
+    }
+}
+[System.Serializable]
+public class SpriteSheet
+{
+    public string path;
+    public string name;
+    public Sprite[] sprites;
+    public Sprite GetSpriteFromSheet(string name)
+    {
+        foreach(var i in sprites)
+        {
+            if(name ==i.name)
+            {
+                return i;
+            }
+        }
+        return null;
+    }
+    public void LoadSpriteSheet()
+    {
+        sprites = Resources.LoadAll<Sprite>(path);
     }
 }

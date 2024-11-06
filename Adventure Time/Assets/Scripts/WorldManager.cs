@@ -19,7 +19,9 @@ public class WorldManager : MonoBehaviour
     public class TileArray
     {
         public List<TileData> tiles;
+        public Dictionary<int, List<TileData>> tilesByBitcount;
         public List<SpriteData> sprites;
+        public List<SpriteSheet> spriteSheets;
         public Tile GetTilebyName(string name)
         {
             foreach (var tile in tiles)
@@ -29,7 +31,7 @@ public class WorldManager : MonoBehaviour
             }
             return null;
         }
-        public Sprite GetSpitebyName(string name)
+        public Sprite GetSpritebyName(string name)
         {
             foreach (var sprite in sprites)
             {
@@ -38,6 +40,10 @@ public class WorldManager : MonoBehaviour
                     return sprite.GetSprite();
                 }
             }
+            return null;
+        }
+        public Sprite GetSpriteByMask(int count, int mask)
+        {
             return null;
         }
     }
@@ -52,7 +58,6 @@ public class WorldManager : MonoBehaviour
         private TileArray tileManager;
         private int seed;
         private int[,] wallsMap;
-        private ChunkNoiseGenerator generator;
         public Chunk(Vector2Int position, Tilemap grassmap, GameObject wall, int chunkSize, TileArray tileArray, int seed)  
         {
             Position = position;
@@ -67,16 +72,13 @@ public class WorldManager : MonoBehaviour
         {
             if(!grassCheck) { GenerateGrass(); }
             else { grassTilemap.gameObject.SetActive(true); }
-            if(wallsMap==null) { GenerateWalls(); }
-            else { REGenerateWalls(); }
-             
-             
+            if(wallsMap==null) { GenerateWalls(); }    
         }
 
         public void GenerateGrass()
         {
             grassCheck = true;
-            Debug.Log("делаем траву - мураву ");
+            //Debug.Log("делаем траву - мураву ");
             for (int x = 0; x < chunkSize; x++)  
             {
                 for (int y = 0; y < chunkSize; y++)
@@ -103,55 +105,30 @@ public class WorldManager : MonoBehaviour
                         wallsMap[i,j]= Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0,0]);
                     }
                 }
-                for (int x = 0; x < chunkSize; x++)
-                { 
-                    for (int y = 0; y < chunkSize; y++)
-                    {
-                        int realX = x + 1 + Position.x * chunkSize;
-                        int realY = y + 1 + Position.y * chunkSize;
-                        //double noiseResult = Mathf.PerlinNoise(realX * 0.1f, realY * 0.1f);
-                        ChunkInfo.Add((wallsMap[x + 1, y + 1] + "  " + realX + "  "+ realY));
-                        if (wallsMap[x + 1,y+1] ==1)
-                        {
-                            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                            {
-                                CreateWall(new Vector2Int(realX, realY));
-                            });
-                        }
-                    }
-                }
+                 
             });
-        }
-        private async void REGenerateWalls()
-        {
-            List<string> ChunkInfo = new List<string>();
-            //Debug.LogWarning($"{noiseArray[0,0]} {noiseArray[1,0]} {noiseArray[0,1]}") ;
-            await Task.Run(() =>
+            for (int x = 0; x < chunkSize; x++)
             {
-               
-
-                for (int x = 0; x < chunkSize; x++)
+                for (int y = 0; y < chunkSize; y++)
                 {
-                    for (int y = 0; y < chunkSize; y++)
+                    int realX = x + 1 + Position.x * chunkSize;
+                    int realY = y + 1 + Position.y * chunkSize;
+                    //double noiseResult = Mathf.PerlinNoise(realX * 0.1f, realY * 0.1f);
+                    ChunkInfo.Add((wallsMap[x + 1, y + 1] + "  " + realX + "  " + realY));
+                    if (wallsMap[x + 1, y + 1] == 1)
                     {
-                        int realX = x + Position.x * chunkSize;
-                        int realY = y + Position.y * chunkSize;
-
-                        if (wallsMap[x + 1, y + 1] ==1)
+                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
                         {
-                            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                            {
-                                CreateWall(new Vector2Int(realX, realY));
-                            });
-                        }
+                            CreateWall(new Vector2Int(realX, realY));
+                        });
                     }
                 }
-            });
+            }
         }
 
         private void CreateWall(Vector2Int position)
         {
-            GameObject wall = Instantiate(WallPrefab, new Vector3(position.x+0.5f, position.y+0.5f, 0), Quaternion.identity);
+            GameObject wall = Instantiate(WallPrefab, new Vector3(position.x, position.y, 0), Quaternion.identity);
             SpriteRenderer s = wall.GetComponent<SpriteRenderer>();
             s.sprite = tileManager.sprites[0].GetSprite();
             wall.transform.parent = grassTilemap.transform;
@@ -177,13 +154,18 @@ public class WorldManager : MonoBehaviour
         {
             Debug.Log("Loaded " + tileManager.tiles.Count + " tiles from JSON.");
             Debug.Log("Loaded " + tileManager.sprites.Count + " sprites from JSON.");
+            Debug.Log("Loaded " + tileManager.spriteSheets.Count + " sprite sheet JSON");
+            foreach(var dataSheet in tileManager.spriteSheets)
+            {
+                dataSheet.LoadSpriteSheet();
+            }
             foreach (var dataTile in tileManager.tiles)
             {
                 dataTile.LoadTiles();
             }
             foreach(var dataSprite in tileManager.sprites)
             {
-                dataSprite.LoadSprite();
+                dataSprite.LoadSprite(tileManager.spriteSheets[0]);
             }
         }
         else

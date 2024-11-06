@@ -40,13 +40,31 @@
             "tileTag":"Floor"
         }       
     ],
+    "spriteSheets":[
+        {
+            "path":"Texture/TX Tileset Wall",
+            "name":"Wall"
+        }
+    ],
     "sprites":[
         {
-            "path": "Texture",
+            "path": "Texture/TX Tileset Wall",
             "name": "MidDownWall", 
             "variantWeights": [
-                {"name": "TX Tileset Stone Ground", "weight": 1}
+                {"name": "TX Tileset Wall_24", "weight": 1}
             ],
+            "bitMask": 11111000,
+            "bitCount": 5,
+            "tileTag":"Wall"
+        },
+        {
+            "path": "Texture/TX Tileset Wall",
+            "name": "MidDownWall", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_24", "weight": 1}
+            ],
+            "bitMask": 11111000,
+            "bitCount": 5,
             "tileTag":"Wall"
         }
     ]

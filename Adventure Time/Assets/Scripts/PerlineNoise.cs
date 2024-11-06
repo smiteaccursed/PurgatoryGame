@@ -17,7 +17,7 @@ public class ChunkNoiseGenerator
             octavesOffset[i] = new Vector2(xOffset / x, yOffset / y);
         }
 
-        if (scale < 0) scale = 0.0001f;
+        if (scale <= 0) scale = 0.0001f;
 
         float halfX = x / 2.0f;
         float halfY = y / 2.0f;

@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4222470122057390654}
-  chunkSize: 10
+  chunkSize: 8
   viewDistance: 2
   WallPrefab: {fileID: 5932630773200076643}
   configFilePath: Assets\Config\PerlineRule.json
@@ -376,7 +376,7 @@ Tilemap:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -17, y: -15, z: 0}
   m_Size: {x: 17, y: 17, z: 1}
-  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileAnchor: {x: 0, y: 0, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
     e00: 1
@@ -737,6 +737,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: DestructionTile
       objectReference: {fileID: 0}
+    - target: {fileID: 2134174508912886475, guid: b7156a128ecb10245a8be0964b4ddb61,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
+        type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
+        type: 3}
+      propertyPath: m_FlipY
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
       propertyPath: m_Size.x
@@ -755,6 +770,16 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
+        type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3376658936793655053, guid: b7156a128ecb10245a8be0964b4ddb61,
+        type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
@@ -766,17 +791,17 @@ PrefabInstance:
     - target: {fileID: 5945561895458120174, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23.69487
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 5945561895458120174, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.428688
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 5945561895458120174, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -181.50545
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5945561895458120174, guid: b7156a128ecb10245a8be0964b4ddb61,
         type: 3}
