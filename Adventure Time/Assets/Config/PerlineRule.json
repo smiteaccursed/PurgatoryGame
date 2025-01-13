@@ -42,30 +42,133 @@
     ],
     "spriteSheets":[
         {
-            "path":"Texture/TX Tileset Wall",
-            "name":"Wall"
+            "paths": ["Texture/TX Tileset Wall","Texture/TX Plant", "Texture/TX Props"]
         }
     ],
-    "sprites":[
+    "sprites":
+    [
         {
-            "path": "Texture/TX Tileset Wall",
-            "name": "MidDownWall", 
+            "name": "LeftDown", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_24", "weight": 1}
             ],
-            "bitMask": 11111000,
-            "bitCount": 5,
-            "tileTag":"Wall"
+            "bitMask": [22,150, 23, 151, 182, 190]
         },
         {
-            "path": "Texture/TX Tileset Wall",
-            "name": "MidDownWall", 
+            "name": "LeftUp", 
             "variantWeights": [
-                {"name": "TX Tileset Wall_24", "weight": 1}
+                {"name": "TX Tileset Wall_0", "weight": 1}
             ],
-            "bitMask": 11111000,
-            "bitCount": 5,
-            "tileTag":"Wall"
+            "bitMask": [208, 209, 240, 244, 212, 210]
+        },
+        {
+            "name": "MidUp", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_1", "weight": 1}
+            ],
+            "bitMask": [74, 252, 248, 249, 250, 253]
+        },
+        {
+            "name": "RightUp", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_2", "weight": 1}
+            ],
+            "bitMask": [104,105, 120, 232, 233, 238, 124]
+        },
+        {
+            "name": "LeftMid", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_8", "weight": 1}
+            ],
+            "bitMask": [214,215, 247, 222, 246]
+        },
+        {
+            "name": "LeftMidRound", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_7", "weight": 1}
+            ],
+            "bitMask": [219, 223]
+        },
+        {
+            "name": "RightMidRound", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_3", "weight": 1}
+            ],
+            "bitMask": [127]
+        },
+        {
+            "name": "RightMid", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_9", "weight": 1}
+            ],
+            "bitMask": [107, 235, 111, 239]
+        },
+        {
+            "name": "MidDownd", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_25", "weight": 1}
+            ],
+            "bitMask": [31, 95, 159, 63]
+        },
+        {
+            "name": "RightDown", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_26", "weight": 1}
+            ],
+            "bitMask": [11, 139, 15, 43, 203, 47,30]
+        },
+        {
+            "name": "BUF", 
+            "variantWeights": [
+                {"name": "TX Props_2", "weight": 1},
+                {"name": "TX Props_3", "weight": 1},
+                {"name": "TX Props_11", "weight": 1},
+                {"name": "TX Props_25", "weight": 1},
+                {"name": "TX Props_26", "weight": 1},
+                {"name": "TX Props_28", "weight": 1},
+                {"name": "TX Props_29", "weight": 1},
+                {"name": "TX Props_30", "weight": 1},
+                {"name": "TX Props_31", "weight": 1},
+                {"name": "TX Props_32", "weight": 1},
+                {"name": "TX Props_33", "weight": 1},
+                {"name": "TX Props_38", "weight": 1},
+                {"name": "TX Props_39", "weight": 1},
+                {"name": "TX Props_40", "weight": 1},
+                {"name": "TX Props_41", "weight": 1},
+                {"name": "TX Props_43", "weight": 1},
+                {"name": "TX Props_44", "weight": 1},
+                {"name": "TX Props_45", "weight": 1},
+                {"name": "TX Props_46", "weight": 1},
+                {"name": "TX Props_47", "weight": 1},
+                {"name": "TX Props_48", "weight": 1},
+                {"name": "TX Props_49", "weight": 1},
+                {"name": "TX Props_50", "weight": 1},
+                {"name": "TX Props_51", "weight": 1},
+                {"name": "TX Props_52", "weight": 1}
+            ],
+            "bitMask": [256]
+        },
+        {
+            "name": "RightUpCorn", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_36", "weight": 1}
+            ],
+            "bitMask": [251]
+        },
+        {
+            "name": "LeftUpCorn", 
+            "variantWeights": [
+                {"name": "TX Tileset Wall_40", "weight": 1}
+            ],
+            "bitMask": [254]
+        },
+        {
+            "name": "OnWall", 
+            "variantWeights": [
+                
+            ],
+            "bitMask": [255 ]
         }
+        
     ]
 }

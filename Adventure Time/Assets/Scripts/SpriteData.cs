@@ -9,80 +9,90 @@ public class VariantWeight
     public double weight;
 }
 [System.Serializable]
-public class SpriteData 
+public class SpriteData // Õ¿ ¡”ƒ”Ÿ≈≈ ›“Œ  À¿—— ƒÀﬂ ŒƒÕŒ√Œ11111111 ÒÔ‡ÈÚ‡
 {
-    public string tileTag;
-    public string path;
     public string name;
     public List<VariantWeight> variantWeights = new List<VariantWeight>();
-    public int bitMask;
-    public int bitCount;
+    public List<int> bitMask = new List<int>();
     [System.NonSerialized]
     public List<Sprite> loadedSprite = new List<Sprite>();
 
     public void LoadSprite(SpriteSheet sprites)
     {
+        
         loadedSprite.Clear();
         foreach (var variant in variantWeights)
         {
             Sprite sprite = sprites.GetSpriteFromSheet(variant.name);
             if (sprite != null)
             {
+                //Debug.Log($"Sprite was loaded");
                 loadedSprite.Add(sprite);
             }
             else
             {
-                Debug.LogWarning($"Sprite not found at path: {path}/{variant.name}");
+                Debug.LogWarning($"Sprite not found at path: {variant.name}");
             }
         }
+
     }
 
+    //public Sprite GetSprite()
+    //{
+    //    if (loadedSprite.Count == 0)
+    //    {
+    //        Debug.LogError("No loaded sprites available!");
+    //        return null;
+    //    }
+    //    if(loadedSprite.Count==1)
+    //    {
+    //        return loadedSprite[0];
+    //    }
+    //    double totalWeight = 0;
+    //    foreach (var variant in variantWeights)
+    //    {
+    //        totalWeight += variant.weight;
+    //    }
+
+    //    double randomValue = Random.Range(0f, (float)totalWeight);
+    //    double cumulativeWeight = 0;
+    //    for(int i=0; i< variantWeights.Count; i++)
+    //    {
+    //        cumulativeWeight += variantWeights[i].weight;
+    //        if (randomValue < cumulativeWeight)
+    //        {
+    //            var index = loadedSprite[i];
+    //            if (index != null)
+    //            {
+    //                return index;
+    //            }
+    //            else
+    //            {
+    //                Debug.LogError($"Sprite not found in loadedSprites for variant: {variantWeights[i].name} + loadedSpriteSize: {loadedSprite.Count}");
+    //                return loadedSprite[0];
+    //            }
+    //        }
+    //    }
+
+    //    return loadedSprite[0];
+    //}
     public Sprite GetSprite()
     {
         if (loadedSprite.Count == 0)
-        {
-            Debug.LogError("No loaded sprites available!");
             return null;
-        }
-        if(loadedSprite.Count==1)
-        {
-            return loadedSprite[0];
-        }
-        double totalWeight = 0;
-        foreach (var variant in variantWeights)
-        {
-            totalWeight += variant.weight;
-        }
 
-        double randomValue = Random.Range(0f, (float)totalWeight);
-        double cumulativeWeight = 0;
-        for(int i=0; i< variantWeights.Count; i++)
-        {
-            cumulativeWeight += variantWeights[i].weight;
-            if (randomValue < cumulativeWeight)
-            {
-                var index = loadedSprite[i];
-                if (index != null)
-                {
-                    return index;
-                }
-                else
-                {
-                    Debug.LogError($"Sprite not found in loadedSprites for variant: {variantWeights[i].name} + loadedSpriteSize: {loadedSprite.Count}");
-                    return loadedSprite[0];
-                }
-            }
-        }
+        double randomValue = Random.value;
+        int index = Mathf.FloorToInt((float)(randomValue * loadedSprite.Count));
 
-        return loadedSprite[0];
+        return loadedSprite[index];
     }
 }
 [System.Serializable]
 public class SpriteSheet
 {
-    public string path;
+    public List<string> paths = new List<string>();
     public string name;
-    public Sprite[] sprites;
+    public List<Sprite> sprites = new List<Sprite>();
     public Sprite GetSpriteFromSheet(string name)
     {
         foreach(var i in sprites)
@@ -92,10 +102,22 @@ public class SpriteSheet
                 return i;
             }
         }
+        Debug.LogWarning($"Sprite with name '{name}' not found.");
         return null;
     }
     public void LoadSpriteSheet()
     {
-        sprites = Resources.LoadAll<Sprite>(path);
+        foreach (var path in paths)
+        {
+            Sprite[] loadedSprites = Resources.LoadAll<Sprite>(path);
+            if (loadedSprites.Length > 0)
+            {
+                sprites.AddRange(loadedSprites);
+            }
+            else
+            {
+                Debug.LogWarning($"No sprites found at path: {path}");
+            }
+        }
     }
 }

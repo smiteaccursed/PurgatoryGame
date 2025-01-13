@@ -10,7 +10,9 @@ public class InputManager : MonoBehaviour
     private Vector2 moveDirection = Vector2.zero;
     private bool interactPressed = false;
     private bool submitPressed = false;
-
+    private bool lightAttack = false;
+    private bool heavyAttack = false;
+    private bool dodge = false;
     private static InputManager instance;
 
     private void Awake()
@@ -64,6 +66,42 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void LightAttackPressed(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            lightAttack = true;
+        }    
+        else if(context.canceled)
+        {
+            lightAttack = false;
+        }
+    }
+
+    public void HeavyAttackPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            heavyAttack = true;
+        }
+        else if (context.canceled)
+        {
+            heavyAttack = false;
+        }
+    }
+
+    public void DodgePressed(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            dodge = true;
+        }
+        else if(context.canceled)
+        {
+            dodge = false;
+        }
+    }
+
     public Vector2 GetMoveDirection()
     {
         return moveDirection;
@@ -89,4 +127,23 @@ public class InputManager : MonoBehaviour
         submitPressed = false;
     }
 
+    public bool GetLightAttackPressed()
+    {
+        bool result = lightAttack;
+        lightAttack = false;
+        return result;
+    }
+
+    public bool GetHeavyAttackPressed()
+    {
+        bool result = heavyAttack;
+        heavyAttack = false;
+        return result;
+    }
+    public bool GetDodegPressed()
+    {
+        bool result = dodge;
+        dodge = false;
+        return result;
+    }
 }

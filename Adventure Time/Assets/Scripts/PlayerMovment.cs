@@ -13,6 +13,15 @@ public class PlayerMovment : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private float MoveX, MoveY = 0;
+    private Vector2 lastMove;
+    public float dodgeSpeed = 12.0f; 
+    public float dodgeDuration = 0.3f;
+    private bool isDodging = false;
+    private float dodgeTimer = 0f;
+
+    public Transform Aim;
+    bool isWalking = false;
+
     private void Awake()
     {
         coll = GetComponent<CapsuleCollider2D>();
@@ -24,28 +33,23 @@ public class PlayerMovment : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (DialogueManager.GetInstance() == null)
+        if ((DialogueManager.GetInstance() == null || !DialogueManager.GetInstance().getDialogueIsPlaying()) && !PlayerAttack.GetInstance().GetAttacking())
         {
             moveSpeed = 6f;
             HandleMovement();
         }
-        if (DialogueManager.GetInstance().getDialogueIsPlaying())
-        {
-            moveSpeed = 0f;
-            //return;
-        }
         else
         {
-            moveSpeed = 6f;
+            moveSpeed = 0f;
         }
 
-        HandleMovement();
     }
 
     private void HandleMovement()
     {
         Vector2 moveDirection = InputManager.GetInstance().GetMoveDirection();
         rb.velocity = moveDirection * moveSpeed;
+        
         UpdateAnimator(moveDirection);
     }
 
@@ -54,14 +58,49 @@ public class PlayerMovment : MonoBehaviour
         if(animator!= null)
         {
             animator.SetFloat("Speed", moveDirection.sqrMagnitude);
-            if(moveDirection.x!=0 || moveDirection.y !=0)
+            if (moveDirection.x != 0 || moveDirection.y != 0)
             {
-                MoveX = moveDirection.x;
-                MoveY = moveDirection.y;
+                isWalking = true;
+                lastMove.x = moveDirection.x;
+                lastMove.y = moveDirection.y;
             }
-            animator.SetFloat("DirectionX", MoveX);
-            animator.SetFloat("DirectionY", MoveY);
+            else
+            {
+                isWalking = false;
+            }
+            Vector3 v3 = Vector3.left * lastMove.x + Vector3.down * lastMove.y;
+            Aim.rotation = Quaternion.LookRotation(Vector3.forward, v3);
+            animator.SetFloat("DirectionX", lastMove.x);
+            animator.SetFloat("DirectionY", lastMove.y);
 
+        }
+    }
+
+    public void Dodge()
+    {
+        if (isDodging) return; 
+
+        isDodging = true;
+        dodgeTimer = dodgeDuration;
+
+        Vector2 dodgeDirection = InputManager.GetInstance().GetMoveDirection().normalized;
+        rb.velocity = dodgeDirection * dodgeSpeed;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Dodge");
+        }
+    }
+
+    private void HandleDodge()
+    {
+        if (!isDodging) return;
+
+        dodgeTimer -= Time.fixedDeltaTime;
+        if (dodgeTimer <= 0f)
+        {
+            isDodging = false;
+            rb.velocity = Vector2.zero; // —брасываем скорость после уклонени€
         }
     }
 }

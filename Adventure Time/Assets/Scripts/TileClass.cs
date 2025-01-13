@@ -4,5 +4,15 @@ using UnityEngine;
 
 public class TileClass : MonoBehaviour
 {
-    public int health=100;
+    public float health=100;
+    public int bit = -1;
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if(health<=0)
+        {
+            Destroy(gameObject);
+        }
+    }
 }

@@ -185,6 +185,9 @@ TextureImporter:
   - first:
       213: 21300120
     second: TX Tileset Wall_60
+  - first:
+      213: 7253796656228076651
+    second: TX Tileset Wall_61
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -2025,6 +2028,27 @@ TextureImporter:
       bones: []
       spriteID: c7d94bfcccfa80c4d922fb8d6c509cec
       internalID: 21300120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TX Tileset Wall_61
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 90
+        width: 465
+        height: 409
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6c046760a9aaa460800000000000000
+      internalID: 7253796656228076651
       vertices: []
       indices: 
       edges: []

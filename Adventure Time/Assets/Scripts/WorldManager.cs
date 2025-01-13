@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class WorldManager : MonoBehaviour
 {
+    
     public GameObject player;
     public int chunkSize = 16;
     public int viewDistance = 2;
@@ -19,7 +20,7 @@ public class WorldManager : MonoBehaviour
     public class TileArray
     {
         public List<TileData> tiles;
-        public Dictionary<int, List<TileData>> tilesByBitcount;
+        public SpriteData[] SpriteArr= new SpriteData[257];
         public List<SpriteData> sprites;
         public List<SpriteSheet> spriteSheets;
         public Tile GetTilebyName(string name)
@@ -42,22 +43,52 @@ public class WorldManager : MonoBehaviour
             }
             return null;
         }
-        public Sprite GetSpriteByMask(int count, int mask)
+        public Sprite GetSpriteByMask(int mask)
         {
-            return null;
+            if (SpriteArr[mask] != null)
+            {
+                return SpriteArr[mask].GetSprite();
+            }
+            else
+            {
+                //Debug.LogWarning($"No sprite found for mask: {mask}");
+                return SpriteArr[256].GetSprite(); 
+            }
+        }
+        public void PutSpritesInDict()
+        {
+            if(sprites.Count<=0 || sprites==null)
+            {
+                Debug.LogError("Sprites < 0");
+                
+            }
+            else
+            {
+                Debug.Log($"{sprites.Count}");
+                foreach (var sprite in sprites)
+                {
+                    foreach(var i in sprite.bitMask)
+                    {
+                        SpriteArr[i] = sprite;
+                    }
+                     
+                }
+            }
         }
     }
 
     public class Chunk
     {
-        public Tilemap grassTilemap;
+        private int[] bitMask = new int[] { 32,8,1,64,2,128,16,4 };
+        public Tilemap grassTilemap; // ковер
         private bool grassCheck = false;
         public GameObject WallPrefab;
-        private Vector2Int Position;
-        private int chunkSize;
+        private Vector2Int Position; // коорды чанка
+        private int chunkSize; // размер чанка
         private TileArray tileManager;
         private int seed;
-        private int[,] wallsMap;
+        private int[,] wallsMap; // битова€ карта с запасом на 1 блок 
+
         public Chunk(Vector2Int position, Tilemap grassmap, GameObject wall, int chunkSize, TileArray tileArray, int seed)  
         {
             Position = position;
@@ -88,51 +119,83 @@ public class WorldManager : MonoBehaviour
             }
             grassTilemap.CompressBounds();
         }
-
-        private async void GenerateWalls()
+        private void GenerateWalls()
         {
             wallsMap = new int[chunkSize + 2, chunkSize + 2];
-            List<string> ChunkInfo = new List<string>();
+
             //Debug.LogWarning($"{noiseArray[0,0]} {noiseArray[1,0]} {noiseArray[0,1]}") ;
-            await Task.Run(() =>
+            for(int i=-1; i <= chunkSize; i++)
             {
-                for(int i=0; i<chunkSize+2; i++)
+                for(int j=-1; j <= chunkSize; j++)
                 {
-                    for(int j=0; j<chunkSize+2; j++)
-                    {
-                        int realX = i - 1 + Position.x * chunkSize;
-                        int realY = j - 1  + Position.y * chunkSize;
-                        wallsMap[i,j]= Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0,0]);
-                    }
+                    int realX = i + Position.x * chunkSize;
+                    int realY = j + Position.y * chunkSize;
+                    wallsMap[i+1, j+1] = Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0]);
+                    
                 }
-                 
-            });
+            }
+
+
             for (int x = 0; x < chunkSize; x++)
             {
                 for (int y = 0; y < chunkSize; y++)
                 {
-                    int realX = x + 1 + Position.x * chunkSize;
-                    int realY = y + 1 + Position.y * chunkSize;
+                    int realX = x  + Position.x * chunkSize;
+                    int realY = y  + Position.y * chunkSize;
+                     
                     //double noiseResult = Mathf.PerlinNoise(realX * 0.1f, realY * 0.1f);
-                    ChunkInfo.Add((wallsMap[x + 1, y + 1] + "  " + realX + "  " + realY));
-                    if (wallsMap[x + 1, y + 1] == 1)
+                    if (wallsMap[x + 1, y +1] == 1)
                     {
-                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                        {
-                            CreateWall(new Vector2Int(realX, realY));
-                        });
+                        CreateWall(new Vector2Int(realX, realY), x, y);
                     }
                 }
             }
         }
-
-        private void CreateWall(Vector2Int position)
+        
+        public int GetBitMask(Vector2Int pos)
         {
+            //Debug.Log($"info about {pos.x} {pos.y}");
+            int x = pos.x+1;
+            int y = pos.y+1;
+            int con = 0;
+            int bitmask = 0;
+            for(int i=-1; i<=1;i++)
+            {
+                for(int j=-1; j<=1; j++)
+                {
+                    if (!(i == 0 && j == 0))
+                    {
+                        
+                        if ((wallsMap[x + i, y + j] == 1))
+                        {
+                            //Debug.Log($"Block {x + i - 1} {y + j -1}  {bitMask[con]}");
+                            bitmask += bitMask[con];
+                        }
+                        con++;
+                    }
+                }
+            }
+            //Debug.Log($"{x} {y}");
+            //Debug.Log($"Bitmask {bitmask} and con {con} for {x-1} {y-1}" );
+            return bitmask;
+        }
+        private void CreateWall(Vector2Int position, int x, int y)
+        {
+            //Debug.Log($"Local coord {x} {y}");
+            //Debug.Log($"Global coord {position.x} {position.y}");
             GameObject wall = Instantiate(WallPrefab, new Vector3(position.x, position.y, 0), Quaternion.identity);
             SpriteRenderer s = wall.GetComponent<SpriteRenderer>();
-            s.sprite = tileManager.sprites[0].GetSprite();
+            int mask = GetBitMask(new Vector2Int(x,y));
+            s.sprite = tileManager.GetSpriteByMask(mask);
             wall.transform.parent = grassTilemap.transform;
+
             wall.AddComponent<BoxCollider2D>();
+            TileClass wallComponent = wall.GetComponent<TileClass>();
+            if (wallComponent != null)
+            {
+                wallComponent.health = 228; // ѕример значени€ здоровь€
+                wallComponent.bit = mask;  // ”становка битовой маски
+            }
         }
     }
 
@@ -167,11 +230,13 @@ public class WorldManager : MonoBehaviour
             {
                 dataSprite.LoadSprite(tileManager.spriteSheets[0]);
             }
+            tileManager.PutSpritesInDict();
         }
         else
         {
-            Debug.LogError("Failed to load tiles from JSON.");
+            //Debug.LogError("Failed to load tiles/sprites from JSON.");
         }
+         
     }
 
     void Update()
@@ -247,5 +312,23 @@ public class WorldManager : MonoBehaviour
                 chunk.grassTilemap.gameObject.SetActive(false);  
             }
         }
+    }
+
+    public void Debug2DArray(int[,] array)
+    {
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);
+        string output = "";
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                output += array[i, j] + " ";
+            }
+            output += "\n"; // ѕереход на новую строку дл€ каждого р€да
+        }
+
+        //Debug.Log($"2D Array:\n{output}"); // ¬ыводим массив в удобном виде
     }
 }
