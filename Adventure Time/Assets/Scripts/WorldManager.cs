@@ -16,6 +16,9 @@ public class WorldManager : MonoBehaviour
     public int seed=0;
     private Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
     public TileArray tileManager = new TileArray();
+    private static WorldManager instance;
+
+    public Material material4Tilemap;
 
     public class TileArray
     {
@@ -108,50 +111,83 @@ public class WorldManager : MonoBehaviour
 
         public void GenerateGrass()
         {
+            if (grassCheck) return;
+
             grassCheck = true;
-            //Debug.Log("делаем траву - мураву ");
-            for (int x = 0; x < chunkSize; x++)  
-            {
-                for (int y = 0; y < chunkSize; y++)
-                {
-                    grassTilemap.SetTile(new Vector3Int(x, y, 0), tileManager.GetTilebyName("Grass"));
-                }
-            }
-            grassTilemap.CompressBounds();
-        }
-        private void GenerateWalls()
-        {
-            wallsMap = new int[chunkSize + 2, chunkSize + 2];
 
-            //Debug.LogWarning($"{noiseArray[0,0]} {noiseArray[1,0]} {noiseArray[0,1]}") ;
-            for(int i=-1; i <= chunkSize; i++)
-            {
-                for(int j=-1; j <= chunkSize; j++)
-                {
-                    int realX = i + Position.x * chunkSize;
-                    int realY = j + Position.y * chunkSize;
-                    wallsMap[i+1, j+1] = Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0]);
-                    
-                }
-            }
-
+            var positions = new List<Vector3Int>(chunkSize * chunkSize);
+            var tiles = new List<Tile>(chunkSize * chunkSize);
 
             for (int x = 0; x < chunkSize; x++)
             {
                 for (int y = 0; y < chunkSize; y++)
                 {
-                    int realX = x  + Position.x * chunkSize;
-                    int realY = y  + Position.y * chunkSize;
-                     
-                    //double noiseResult = Mathf.PerlinNoise(realX * 0.1f, realY * 0.1f);
-                    if (wallsMap[x + 1, y +1] == 1)
+                    positions.Add(new Vector3Int(x, y, 0));
+                    tiles.Add(tileManager.GetTilebyName("Grass"));
+                }
+            }
+
+            TilemapRenderer renGrass = grassTilemap.GetComponent<TilemapRenderer>();
+            renGrass.material = WorldManager.GetInstance().material4Tilemap ;
+            grassTilemap.SetTiles(positions.ToArray(), tiles.ToArray());
+            grassTilemap.CompressBounds();
+        }
+
+        private async void GenerateWalls()
+        {
+            if (wallsMap != null) return;
+
+            wallsMap = new int[chunkSize + 2, chunkSize + 2];
+            var wallsData = new List<(Vector3 position, int mask)>();
+
+            
+            await Task.Run(() =>
+            {
+                
+                for (int i = -1; i <= chunkSize; i++)
+                {
+                    for (int j = -1; j <= chunkSize; j++)
                     {
-                        CreateWall(new Vector2Int(realX, realY), x, y);
+                        int realX = i + Position.x * chunkSize;
+                        int realY = j + Position.y * chunkSize;
+                        wallsMap[i + 1, j + 1] = Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(
+                            1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0]);
                     }
+                }
+
+                
+                for (int x = 0; x < chunkSize; x++)
+                {
+                    for (int y = 0; y < chunkSize; y++)
+                    {
+                        if (wallsMap[x + 1, y + 1] == 1)
+                        {
+                            var position = new Vector3(x + Position.x * chunkSize, y + Position.y * chunkSize, 0);
+                            int mask = GetBitMask(new Vector2Int(x, y));
+                            wallsData.Add((position, mask));
+                        }
+                    }
+                }
+            });
+
+            
+            foreach (var wallData in wallsData)
+            {
+                GameObject wall = Instantiate(WallPrefab, wallData.position, Quaternion.identity);
+                wall.transform.parent = grassTilemap.transform;
+
+              
+                SpriteRenderer s = wall.GetComponent<SpriteRenderer>();
+                s.sprite = tileManager.GetSpriteByMask(wallData.mask);
+                
+                BoxCollider2D collider = wall.AddComponent<BoxCollider2D>();
+                TileClass wallComponent = wall.GetComponent<TileClass>();
+                if (wallComponent != null)
+                {
+                    wallComponent.bit = wallData.mask;
                 }
             }
         }
-        
         public int GetBitMask(Vector2Int pos)
         {
             //Debug.Log($"info about {pos.x} {pos.y}");
@@ -179,28 +215,87 @@ public class WorldManager : MonoBehaviour
             //Debug.Log($"Bitmask {bitmask} and con {con} for {x-1} {y-1}" );
             return bitmask;
         }
-        private void CreateWall(Vector2Int position, int x, int y)
-        {
-            //Debug.Log($"Local coord {x} {y}");
-            //Debug.Log($"Global coord {position.x} {position.y}");
-            GameObject wall = Instantiate(WallPrefab, new Vector3(position.x, position.y, 0), Quaternion.identity);
-            SpriteRenderer s = wall.GetComponent<SpriteRenderer>();
-            int mask = GetBitMask(new Vector2Int(x,y));
-            s.sprite = tileManager.GetSpriteByMask(mask);
-            wall.transform.parent = grassTilemap.transform;
 
-            wall.AddComponent<BoxCollider2D>();
-            TileClass wallComponent = wall.GetComponent<TileClass>();
-            if (wallComponent != null)
+        public int GetNewBitMask(Vector2Int pos)
+        {
+            int con = 0;
+            int bitmask = 0;
+
+            // Проверяем всех соседей по кругу
+            for (int i = -1; i <= 1; i++)
             {
-                wallComponent.health = 228; // Пример значения здоровья
-                wallComponent.bit = mask;  // Установка битовой маски
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (!(i == 0 && j == 0)) // Пропускаем центральный тайл
+                    {
+                        Vector2Int neighborPos = new Vector2Int(pos.x + i, pos.y + j);
+
+                        // Если соседний тайл существует, добавляем его к маске
+                        if (IsTilePresent(neighborPos))
+                        {
+                            bitmask += bitMask[con];
+                        }
+
+                        con++;
+                    }
+                }
+            }
+
+            return bitmask;
+        }
+
+        private bool IsTilePresent(Vector2Int position)
+        {
+            Collider2D collider = Physics2D.OverlapPoint(new Vector2(position.x, position.y));
+
+            if (collider != null && collider.CompareTag("Tile"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdateTileSprite(Vector2Int tileCoord)
+        {
+            int newMask = GetNewBitMask(tileCoord); // Получаем новую битовую маску
+            Sprite newSprite = tileManager.GetSpriteByMask(newMask); // Подбираем спрайт
+            // Debug.Log("Updating tile");
+            // Находим объект тайла
+            Collider2D collider = Physics2D.OverlapPoint(new Vector2(tileCoord.x, tileCoord.y));
+            if (collider != null && collider.CompareTag("Tile"))
+            {
+                var spriteRenderer = collider.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.sprite = newSprite; // Обновляем спрайт
+                }
             }
         }
+
+        public void UpdateTileAndNeighbors(Vector2Int tileCoord)
+        {
+            // Обновляем текущий тайл
+
+            // Обновляем соседние тайлы
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (!(i == 0 && j == 0)) // Пропускаем центральный тайл
+                    {
+                        Vector2Int neighborPos = new Vector2Int(tileCoord.x + i, tileCoord.y + j);
+                        UpdateTileSprite(neighborPos); // Обновляем спрайт соседа
+                    }
+                }
+            }
+        }
+
     }
 
     void Start()
     {
+        instance = this;
         lastPlayerPosition = player.transform.position;
         UnityMainThreadDispatcher.Instance();
         LoadJsonData(configFilePath);
@@ -249,6 +344,24 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    public Chunk FindChunkAtPosition(Vector2Int position)
+    {
+        // Пытаемся найти чанк по координатам
+        Vector2Int chunkCoord = new Vector2Int(Mathf.FloorToInt(position.x / chunkSize), Mathf.FloorToInt(position.y / chunkSize));
+
+        if (chunks.ContainsKey(chunkCoord))
+        {
+            return chunks[chunkCoord];
+        }
+        else
+        {
+            return null; // Если чанк не найден, возвращаем null
+        }
+    }
+    public static WorldManager GetInstance()
+    {
+        return instance;
+    }
     void GenerateChunks()
     {
         Vector2Int playerChunkCoord = new Vector2Int(
@@ -314,21 +427,4 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    public void Debug2DArray(int[,] array)
-    {
-        int rows = array.GetLength(0);
-        int cols = array.GetLength(1);
-        string output = "";
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                output += array[i, j] + " ";
-            }
-            output += "\n"; // Переход на новую строку для каждого ряда
-        }
-
-        //Debug.Log($"2D Array:\n{output}"); // Выводим массив в удобном виде
-    }
 }

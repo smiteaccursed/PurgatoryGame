@@ -12,7 +12,6 @@ public class PlayerMovment : MonoBehaviour
     private CapsuleCollider2D coll;
     private Rigidbody2D rb;
     private Animator animator;
-    private float MoveX, MoveY = 0;
     private Vector2 lastMove;
     public float dodgeSpeed = 12.0f; 
     public float dodgeDuration = 0.3f;

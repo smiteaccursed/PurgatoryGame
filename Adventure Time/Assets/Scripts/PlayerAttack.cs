@@ -7,9 +7,10 @@ public class PlayerAttack : MonoBehaviour
     public GameObject Melee;
     private bool isLAttacking = false;
     private bool isAttaking = false;
-    private float atkDuration = 0.3f;
+    private float atkDuration = 0.1f;
     private float atkTimer = 0f;
-
+    private static float atkAnimConst = 0.5f;
+    private float atkAnimLTimer = atkAnimConst;
     private Animator animator;
     private Collider2D meleeCollider;
     private SpriteRenderer meleeRenderer;
@@ -37,7 +38,7 @@ public class PlayerAttack : MonoBehaviour
             CheckMeleeTimer();
         }
 
-        if (InputManager.GetInstance().GetLightAttackPressed())
+        if (InputManager.GetInstance()!=null && InputManager.GetInstance().GetLightAttackPressed())
         {
             isAttaking = true;
             OnLightAttack();
@@ -57,6 +58,7 @@ public class PlayerAttack : MonoBehaviour
             meleeRenderer.enabled = true;
             isLAttacking = true;
             isAttaking = true;
+            atkAnimLTimer = atkAnimConst;
             animator.SetBool("LightAttack", true);
         }
     }
@@ -70,8 +72,8 @@ public class PlayerAttack : MonoBehaviour
             isLAttacking = false;
             meleeCollider.enabled = false;
             meleeRenderer.enabled = false;
-            animator.SetBool("LightAttack", false);
             isAttaking = false;
+            animator.SetBool("LightAttack", false);
         }
     }
 

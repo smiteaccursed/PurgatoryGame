@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/CaveGeneration.unity
+    guid: dc024f149c42c1a44b65f13a9f1b38ea
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: dc54049d45e09774fa94e6ebebb6dabd,
       type: 2}
