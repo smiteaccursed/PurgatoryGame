@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Rendering;
-
+using UnityEngine.UI;
 public class TimeManger : MonoBehaviour
 {
 
@@ -14,25 +15,32 @@ public class TimeManger : MonoBehaviour
     public int hours=0;
     public int days = 1;
     public bool isLights =false;
-    public GameObject[] lights;
+    public List<GameObject> lights = new List<GameObject>();
+    public Image MinImage;
+    public Image HourImage;
 
+    private static TimeManger instance;
+
+    private static float hourDeg = 1f / 12f * 360f;
+    private static float minDeg = 1f / 60f * 360f;
+    private float minRot = 0;
+    private float hourRot=0;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
-        if (ppv == null)
-        {
-            Debug.Log("»щем компонент Volume на текущем объекте...");
-            ppv = GetComponent<Volume>();
-        }
-
-        if (ppv == null)
-        {
-            Debug.LogError("Volume не найден!");
-        }
-        else
-        {
-            Debug.Log("Volume успешно найден.");
-        }
+        ppv = GetComponent<Volume>();
+         
+        minRot = (mins +15) * minDeg;
+        hourRot = (hours +1)  * hourDeg;
+        UpdateMin(minRot);
+        UpdateHour(hourRot);
+        //lights[0].SetActive(false);
+        isLights = false;
     }
 
     void FixedUpdate()
@@ -48,58 +56,93 @@ public class TimeManger : MonoBehaviour
         {
             seconds = 0;
             mins += 1;
+            minRot += minDeg;
+            if (minRot >= 360)
+                minRot -= 360;
+            UpdateMin(minRot);
         }
 
         if (mins >= 60) //60 min = 1 hr
         {
             mins = 0;
             hours += 1;
+            hourRot += hourDeg;
+            if (hourRot >= 360)
+                hourRot -= 360;
+            UpdateHour(hourRot);
         }
 
         if (hours >= 24) //24 hr = 1 day
         {
             hours = 0;
             days += 1;
+            PlayerCampfire.Instance.ResetCampfireCount();
+            lights.RemoveAll(light => light == null);
         }
         ControlPPV();
     }
 
-    public void ControlPPV() // used to adjust the post processing slider.
+    public void ControlPPV() 
     {
-        //ppv.weight = 0;
-        if (hours >= 21 && hours < 22) // dusk at 21:00 / 9pm    -   until 22:00 / 10pm
-        {
-            ppv.weight = (float)mins / 60; // since dusk is 1 hr, we just divide the mins by 60 which will slowly increase from 0 - 1 
 
-            if (isLights == false) // if lights havent been turned on
+        if (hours >= 21 && hours < 22) 
+        {
+            ppv.weight = (float)mins / 60;
+            if (isLights == false) 
             {
-                if (mins > 45) // wait until pretty dark
+                if (mins > 45)
                 {
-                    for (int i = 0; i < lights.Length; i++)
+                    foreach (var light in lights)
                     {
-                        lights[i].SetActive(true); // turn them all on
+                        light.SetActive(true);
                     }
-                    isLights = true;
                 }
+                isLights = true;
             }
         }
 
 
-        if (hours >= 6 && hours < 7) // Dawn at 6:00 / 6am    -   until 7:00 / 7am
+        if (hours >= 6 && hours < 7)
         {
-            ppv.weight = 1 - (float)mins / 60; // we minus 1 because we want it to go from 1 - 0
-             
-            if (isLights == true) // if lights are on
+            ppv.weight = 1 - (float)mins / 60;
+
+            
+            if (isLights == true)
             {
-                if (mins > 45) // wait until pretty bright
+                if (mins > 45)
                 {
-                    for (int i = 0; i < lights.Length; i++)
+                    foreach (var light in lights)
                     {
-                        lights[i].SetActive(false); // shut them off
+                        light.SetActive(false);
                     }
-                    isLights = false;
                 }
+                isLights = false;
             }
         }
+    }
+
+    public void UpdateMin(float rot)
+    {
+        MinImage.transform.rotation = Quaternion.Euler(0, 0, -rot);
+    }
+
+    public void UpdateHour(float rot)
+    {
+        HourImage.transform.rotation = Quaternion.Euler(0, 0, -rot);
+    }
+
+    public static TimeManger GetInstance ()
+    {
+        return instance;
+    }
+
+    public void RegisterNewLight(GameObject light)
+    {
+        lights.Add(light);
+    }
+
+    public bool IsNight()
+    {
+        return isLights;
     }
 }

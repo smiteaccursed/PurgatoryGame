@@ -666,9 +666,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 445
-        y: 419
-        width: 46
-        height: 73
+        y: 418
+        width: 37
+        height: 72
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

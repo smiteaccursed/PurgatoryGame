@@ -121,15 +121,12 @@
             "name": "BUF", 
             "variantWeights": [
                 {"name": "TX Props_2", "weight": 1},
-                {"name": "TX Props_3", "weight": 1},
                 {"name": "TX Props_11", "weight": 1},
                 {"name": "TX Props_25", "weight": 1},
                 {"name": "TX Props_26", "weight": 1},
-                {"name": "TX Props_28", "weight": 1},
                 {"name": "TX Props_29", "weight": 1},
                 {"name": "TX Props_30", "weight": 1},
                 {"name": "TX Props_31", "weight": 1},
-                {"name": "TX Props_32", "weight": 1},
                 {"name": "TX Props_33", "weight": 1},
                 {"name": "TX Props_38", "weight": 1},
                 {"name": "TX Props_39", "weight": 1},
@@ -168,6 +165,12 @@
                 
             ],
             "bitMask": [255 ]
+        },
+        {
+            "name": "Hollow", 
+            "variantWeights": [  
+            ],
+            "bitMask": [257 ]
         }
         
     ]

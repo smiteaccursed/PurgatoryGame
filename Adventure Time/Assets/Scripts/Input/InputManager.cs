@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     private bool submitPressed = false;
     private bool lightAttack = false;
     private bool heavyAttack = false;
+    private bool placed = false;
     private bool dodge = false;
     private static InputManager instance;
 
@@ -102,6 +103,18 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void PlacePressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            placed = true;
+        }
+        else if (context.canceled)
+        {
+            placed = false;
+        }
+    }
+
     public Vector2 GetMoveDirection()
     {
         return moveDirection;
@@ -144,6 +157,13 @@ public class InputManager : MonoBehaviour
     {
         bool result = dodge;
         dodge = false;
+        return result;
+    }
+
+    public bool GetPlacePressed()
+    {
+        bool result = placed;
+        placed = false;
         return result;
     }
 }

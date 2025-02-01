@@ -6,28 +6,32 @@ public class TileClass : MonoBehaviour
 {
     public float health=30;
     public int bit = -1;
- 
+    public bool isbuf;
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if(health<=0)
+        if(health<=0 && !isbuf)
         {
-            OnDestroy();
+            //OnDestroy();
+        }
+        else 
+        { 
+            Destroy(gameObject); 
         }
     }
 
-    private void OnDestroy()
-    {
-        Vector2Int blockPosition = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+    //private void OnDestroy()
+    //{
+    //    Vector2Int blockPosition = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
 
-        // ”дал€ем блок
-        Destroy(gameObject);
+    //    // ”дал€ем блок
+    //    Destroy(gameObject);
 
-        // ѕолучаем чанк, в котором находитс€ блок (если используетс€ система чанков)
-        WorldManager.Chunk currentChunk = WorldManager.GetInstance().FindChunkAtPosition(new Vector2Int(0,0));
+    //    // ѕолучаем чанк, в котором находитс€ блок (если используетс€ система чанков)
+    //    WorldManager.Chunk currentChunk = WorldManager.GetInstance().FindChunkAtPosition(new Vector2Int(0,0));
 
-        // ќбновл€ем спрайты соседей
-        currentChunk.UpdateTileAndNeighbors(blockPosition);
-        Destroy(gameObject);
-    }
+    //    // ќбновл€ем спрайты соседей
+    //    currentChunk.UpdateTileAndNeighbors(blockPosition);
+    //    Destroy(gameObject);
+    //}
 }

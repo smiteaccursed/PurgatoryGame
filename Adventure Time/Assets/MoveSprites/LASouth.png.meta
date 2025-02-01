@@ -131,9 +131,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 36
-        width: 73
-        height: 109
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,10 +151,10 @@ TextureImporter:
       name: LASouth_1
       rect:
         serializedVersion: 2
-        x: 120
-        y: 36
-        width: 85
-        height: 109
+        x: 123
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -172,10 +172,10 @@ TextureImporter:
       name: LASouth_2
       rect:
         serializedVersion: 2
-        x: 256
+        x: 246
         y: 0
-        width: 56
-        height: 103
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,10 +193,10 @@ TextureImporter:
       name: LASouth_3
       rect:
         serializedVersion: 2
-        x: 367
-        y: 12
-        width: 101
-        height: 133
+        x: 369
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,10 +214,10 @@ TextureImporter:
       name: LASouth_4
       rect:
         serializedVersion: 2
-        x: 491
-        y: 32
-        width: 122
-        height: 113
+        x: 492
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,13 +235,13 @@ TextureImporter:
       name: LASouth_5
       rect:
         serializedVersion: 2
-        x: 632
-        y: 36
-        width: 107
-        height: 109
+        x: 615
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 1, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -256,10 +256,10 @@ TextureImporter:
       name: LASouth_6
       rect:
         serializedVersion: 2
-        x: 760
-        y: 36
-        width: 59
-        height: 79
+        x: 738
+        y: 0
+        width: 123
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,27 +269,6 @@ TextureImporter:
       bones: []
       spriteID: b295655f1e6014150800000000000000
       internalID: 5854968558111840555
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LASouth_7
-      rect:
-        serializedVersion: 2
-        x: 818
-        y: 87
-        width: 5
-        height: 4
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: be1e9aca8787b1fd0800000000000000
-      internalID: -2370168319192210965
       vertices: []
       indices: 
       edges: []

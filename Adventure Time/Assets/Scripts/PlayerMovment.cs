@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 [RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovment : MonoBehaviour
@@ -13,21 +12,28 @@ public class PlayerMovment : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private Vector2 lastMove;
+    private Vector2 cursor;
     public float dodgeSpeed = 12.0f; 
     public float dodgeDuration = 0.3f;
     private bool isDodging = false;
     private float dodgeTimer = 0f;
-
     public Transform Aim;
+    private static PlayerMovment instance;
     bool isWalking = false;
 
     private void Awake()
     {
+        instance = this;
         coll = GetComponent<CapsuleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         animator = GetComponent<Animator>();
+    }
+
+    public static PlayerMovment GetInctance()
+    {
+        return instance;
     }
 
     private void FixedUpdate()
@@ -69,6 +75,10 @@ public class PlayerMovment : MonoBehaviour
             }
             Vector3 v3 = Vector3.left * lastMove.x + Vector3.down * lastMove.y;
             Aim.rotation = Quaternion.LookRotation(Vector3.forward, v3);
+
+            cursor.x = Aim.position.x;
+            cursor.y = Aim.position.y;
+
             animator.SetFloat("DirectionX", lastMove.x);
             animator.SetFloat("DirectionY", lastMove.y);
 
@@ -101,5 +111,10 @@ public class PlayerMovment : MonoBehaviour
             isDodging = false;
             rb.velocity = Vector2.zero; // —брасываем скорость после уклонени€
         }
+    }
+
+    public Vector2 GetPlayerPosition()
+    {
+        return lastMove;
     }
 }
