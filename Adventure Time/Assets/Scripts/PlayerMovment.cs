@@ -46,6 +46,7 @@ public class PlayerMovment : MonoBehaviour
         else
         {
             moveSpeed = 0f;
+            rb.velocity = Vector2.zero;
         }
 
     }

@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class TileClass : MonoBehaviour
 {
-    public float health=30;
+    public float health;
     public int bit = -1;
     public bool isbuf;
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if(health<=0 && !isbuf)
+        if(health<=0 && isbuf)
         {
-            //OnDestroy();
+            Destroy(gameObject);
         }
-        else 
-        { 
-            Destroy(gameObject); 
-        }
+
     }
 
     //private void OnDestroy()

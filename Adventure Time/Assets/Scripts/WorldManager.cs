@@ -173,26 +173,14 @@ public class WorldManager : MonoBehaviour
 
             var wallsData = new List<(Vector3 position, int mask)>();
             var createdObject = new List<(Vector3 position, int mask)>();
+            
+            if(!isPreload)
+            {
+                await WallGeneration();
+            }
 
             await Task.Run(() =>
             {
-                if(!isPreload)//если была предзагрузка
-                {
-                    for (int i = -1; i <= chunkSize; i++)
-                    {
-                        for (int j = -1; j <= chunkSize; j++)
-                        {
-                            int realX = i + Position.x * chunkSize;
-                            int realY = j + Position.y * chunkSize;
-                            //if(wallsMap[i + 1, j + 1]!=-1)
-                            wallsMap[i + 1, j + 1] = Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(
-                                1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0]);
-
-                            
-                        }
-                    }
-                }
-
                 for (int x = 0; x < chunkSize; x++)
                 {
                     for (int y = 0; y < chunkSize; y++)
@@ -388,22 +376,7 @@ public class WorldManager : MonoBehaviour
             SpriteArr = StructSprites;
             wallsMap = new int[chunkSize + 2, chunkSize + 2];
             Debug.Log("Запуск разметки");
-            await Task.Run(() =>
-            {
-                for (int i = -1; i <= chunkSize; i++)
-                {
-                    for (int j = -1; j <= chunkSize; j++)
-                    {
-                        int realX = i + Position.x * chunkSize;
-                        int realY = j + Position.y * chunkSize;
-
-                        wallsMap[i + 1, j + 1] = Mathf.RoundToInt((float)ChunkNoiseGenerator.GenerateNoise(
-                            1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0]);
-
-                    }
-                }
-
-            });
+            await WallGeneration();
             Debug.Log("Разметка структуры");
             await Task.Run(() =>
             {
@@ -424,6 +397,39 @@ public class WorldManager : MonoBehaviour
             Print2DArray(wallsMap);
             Generates();
 
+        }
+
+        private async Task WallGeneration()
+        {
+            await Task.Run(() =>
+            {
+                System.Random rand = new System.Random(); // Создаём объект для генерации случайных чисел
+
+                for (int i = -1; i <= chunkSize; i++)
+                {
+                    for (int j = -1; j <= chunkSize; j++)
+                    {
+                        int realX = i + Position.x * chunkSize;
+                        int realY = j + Position.y * chunkSize;
+                        float buf = (float)ChunkNoiseGenerator.GenerateNoise(
+                            1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0];
+
+                        wallsMap[i + 1, j + 1] = Mathf.RoundToInt(buf);
+
+                        // Если значение меньше 0.2, ставим 1 (стена)
+                        if (buf < 0.2)
+                        {
+                            wallsMap[i + 1, j + 1] = 1;
+                        }
+
+                        // Если после округления получилось 0, даем 10% шанс поставить 1
+                        else if (wallsMap[i + 1, j + 1] == 0 && rand.NextDouble() < 0.02)
+                        {
+                            wallsMap[i + 1, j + 1] = 1;
+                        }
+                    }
+                }
+            });
         }
 
         public void ClearChunk()

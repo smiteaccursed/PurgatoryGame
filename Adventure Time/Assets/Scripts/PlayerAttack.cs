@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public GameObject Melee;
-    private bool isLAttacking = false;
-    private bool isAttaking = false;
-    private float atkDuration = 0.1f;
-    private float atkTimer = 0f;
-    private static float atkAnimConst = 0.5f;
-    private float atkAnimLTimer = atkAnimConst;
+    public GameObject Melee; // attack location
+
+    private bool isLAttacking;
+    public bool isAttaking;
+
+    public float attackTime;
+    public float startTimeAttack;
+
+   //public LayerMask enemies;
+
     private Animator animator;
     private Collider2D meleeCollider;
     private SpriteRenderer meleeRenderer;
@@ -33,15 +36,33 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (isLAttacking)
-        {
-            CheckMeleeTimer();
-        }
+        //if (isLAttacking)
+        //{
+        //    CheckMeleeTimer();
+        //}
 
-        if (InputManager.GetInstance()!=null && InputManager.GetInstance().GetLightAttackPressed())
+        //if (InputManager.GetInstance()!=null && InputManager.GetInstance().GetLightAttackPressed())
+        //{
+        //    isAttaking = true;
+        //    OnLightAttack();
+        //}
+
+        if(attackTime <=0)
         {
-            isAttaking = true;
-            OnLightAttack();
+            if (InputManager.GetInstance() != null && InputManager.GetInstance().GetLightAttackPressed())
+            {
+                OnLightAttack();
+                attackTime = startTimeAttack;
+            }
+            else
+            {
+                DisableAttackFlag();
+            }
+        }
+        else
+        {
+            attackTime -= Time.deltaTime;
+            DisableLAFlags();
         }
     }
 
@@ -58,23 +79,22 @@ public class PlayerAttack : MonoBehaviour
             meleeRenderer.enabled = true;
             isLAttacking = true;
             isAttaking = true;
-            atkAnimLTimer = atkAnimConst;
             animator.SetBool("LightAttack", true);
         }
     }
 
-    void CheckMeleeTimer()
+    void DisableLAFlags()
     {
-        atkTimer += Time.deltaTime;
-        if (atkTimer >= atkDuration)
-        {
-            atkTimer = 0;
-            isLAttacking = false;
-            meleeCollider.enabled = false;
-            meleeRenderer.enabled = false;
-            isAttaking = false;
-            animator.SetBool("LightAttack", false);
-        }
+        isLAttacking = false;
+ 
+        animator.SetBool("LightAttack", false);
+    }
+    
+    void DisableAttackFlag()
+    {
+        isAttaking = false;
+        meleeCollider.enabled = false;
+        meleeRenderer.enabled = false;
     }
 
     public bool GetAttacking()

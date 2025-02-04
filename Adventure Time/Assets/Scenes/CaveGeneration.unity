@@ -1450,6 +1450,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Melee: {fileID: 616966656}
+  isAttaking: 0
+  attackTime: 0
+  startTimeAttack: 0.3
 --- !u!114 &4222470122057390656
 MonoBehaviour:
   m_ObjectHideFlags: 0
