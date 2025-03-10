@@ -16,6 +16,9 @@ public class InputManager : MonoBehaviour
     private bool dodge = false;
     private static InputManager instance;
 
+    private bool UIDown = false;
+    private bool UIUp = false;
+
     private void Awake()
     {
         if (instance != null)
@@ -115,6 +118,29 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void UIUpPressed(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            UIUp = true;
+        }
+        else
+        {
+            UIUp = false;
+        }
+    }
+    public void UIDownPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            UIDown = true;
+        }
+        else
+        {
+            UIDown = false;
+        }
+    }
+
     public Vector2 GetMoveDirection()
     {
         return moveDirection;
@@ -138,6 +164,27 @@ public class InputManager : MonoBehaviour
     public void RegisterSubmitPressed()
     {
         submitPressed = false;
+    }
+
+    public bool GetUIUpPressed()
+    {
+        bool result = UIUp;
+        UIUp = false;
+        return result;
+    }
+    public void RegisterUIUpPressed()
+    {
+        UIUp = false;
+    }
+    public bool GetUIDownPressed()
+    {
+        bool result = UIDown;
+        UIDown = false;
+        return result;
+    }
+    public void RegisterUIDownPressed()
+    {
+        UIDown = false;
     }
 
     public bool GetLightAttackPressed()

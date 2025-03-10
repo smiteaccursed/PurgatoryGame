@@ -30,7 +30,7 @@ public class EnemyAI : MonoBehaviour
     private bool isAttacking;
     public float lastAttackTime;
     public Vector2 moveDirection;
-    EnemyUI enemyUI;
+    public EnemyUI enemyUI;
 
 
     private void Start()
@@ -51,7 +51,7 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         behavior.Execute(this);
-        
+
         //if (TargetInSight())
         //{
         //    lastSeenPosition = target.position;

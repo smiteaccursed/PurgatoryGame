@@ -7,11 +7,14 @@ public class EnemyUI: MonoBehaviour
 {
     public Text enemyUI;
     private EnemyAI enemyAI;
-
-    void Start()
+    private void Awake()
     {
         enemyUI = GetComponentInChildren<Text>();
         enemyAI = GetComponentInParent<EnemyAI>();
+    }
+
+    void Start()
+    {
         //SetName();
     }
 
