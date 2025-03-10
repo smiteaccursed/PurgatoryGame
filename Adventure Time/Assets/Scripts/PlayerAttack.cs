@@ -76,7 +76,7 @@ public class PlayerAttack : MonoBehaviour
         if (!isLAttacking)
         {
             meleeCollider.enabled = true;
-            meleeRenderer.enabled = true;
+            //meleeRenderer.enabled = true;
             isLAttacking = true;
             isAttaking = true;
             animator.SetBool("LightAttack", true);

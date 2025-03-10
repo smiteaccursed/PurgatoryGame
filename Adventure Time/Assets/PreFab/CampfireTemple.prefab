@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3024686100931343388}
-  - component: {fileID: 3024686100931343395}
+  - component: {fileID: 8754107793786221441}
   m_Layer: 0
   m_Name: Lighting
   m_TagString: LightSource
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 3024686101505619598}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3024686100931343395
+--- !u!114 &8754107793786221441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,20 +46,20 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5028921, b: 0, a: 1}
   m_Intensity: 2
-  m_LightVolumeOpacity: 0
+  m_LightVolumeOpacity: 1
   m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 0
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
-  m_ShadowIntensity: 0
-  m_ShadowVolumeIntensity: 0
+  m_ShadowIntensity: 1
+  m_ShadowVolumeIntensity: 1
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 12
+  m_PointLightOuterRadius: 10
   m_PointLightDistance: 3
   m_PointLightQuality: 1
   m_ShapeLightParametricSides: 5
@@ -84,6 +84,7 @@ GameObject:
   - component: {fileID: 3024686101505619599}
   - component: {fileID: 3024686101505619592}
   - component: {fileID: 3024686101505619593}
+  - component: {fileID: 3708294348381381820}
   m_Layer: 0
   m_Name: CampfireTemple
   m_TagString: Untagged
@@ -192,3 +193,17 @@ CircleCollider2D:
   m_Offset: {x: -0.005090517, y: -0.049949102}
   serializedVersion: 2
   m_Radius: 0.12533842
+--- !u!114 &3708294348381381820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3024686101505619594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 764e63a9a7aca3b44b87ad245770b596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLifetime: 30
+  currentLifetime: 0

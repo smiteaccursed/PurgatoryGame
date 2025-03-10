@@ -20,7 +20,11 @@ public class PlayerCampfire : MonoBehaviour
     {
         instance = this;
         currentCount = maxCampfires;
-        campfireTemple = Resources.Load<GameObject>("CampfireTemple");
+        if(campfireTemple==null)
+        {
+            campfireTemple = Resources.Load<GameObject>("CampfireTemple");
+
+        }
     }
 
     private void Update()
@@ -33,8 +37,6 @@ public class PlayerCampfire : MonoBehaviour
 
     private void PlaceCampfire()
     {
-
-
         if (currentCount == 0 ) return; // Ограничение по количеству
 
         playerCoord = new Vector2(
@@ -48,7 +50,6 @@ public class PlayerCampfire : MonoBehaviour
         placePosition.y += playerCoord.y;
 
         GameObject newCampfire = Instantiate(campfireTemple, placePosition, Quaternion.identity);
-                    
 
         campfires.Add(newCampfire);
         Transform lightTransform = newCampfire.transform.Find("Lighting");
@@ -57,11 +58,12 @@ public class PlayerCampfire : MonoBehaviour
         {
             lightTransform.gameObject.SetActive(true);
         }
-            currentCount -= 1;
+        currentCount -= 1;
         if (lightTransform != null)
         {
             TimeManger.GetInstance().RegisterNewLight(lightTransform.gameObject);
         }
+
 
         StartCoroutine(DestroyCampfireAfterTime(newCampfire, newCampfire.GetComponent<Campfire>().maxLifetime));
     }

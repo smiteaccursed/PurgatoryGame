@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
@@ -15,14 +13,11 @@ public class Campfire : MonoBehaviour
         currentLifetime = maxLifetime;
         light2D = GetComponentInChildren<Light2D>();
         fireSprite = GetComponent<SpriteRenderer>();
-
     }
 
     void Update()
     {
         currentLifetime -= Time.deltaTime;
-
-        float lifePercent = currentLifetime / maxLifetime;
         //if (light2D != null)
         //{
         //    light2D.intensity = Mathf.Lerp(0, 1, lifePercent); // €ркость света

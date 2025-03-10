@@ -14,6 +14,9 @@ public class TimeManger : MonoBehaviour
     public int mins=0;
     public int hours=0;
     public int days = 1;
+    public int timeofDawn = 7;
+    public int timeofSunset = 22;
+
     public bool isLights =false;
     public List<GameObject> lights = new List<GameObject>();
     public Image MinImage;
@@ -85,7 +88,7 @@ public class TimeManger : MonoBehaviour
     public void ControlPPV() 
     {
 
-        if (hours >= 21 && hours < 22) 
+        if (hours >= (timeofSunset-1) && hours < timeofSunset) 
         {
             ppv.weight = (float)mins / 60;
             if (isLights == false) 
@@ -102,7 +105,7 @@ public class TimeManger : MonoBehaviour
         }
 
 
-        if (hours >= 6 && hours < 7)
+        if (hours >= (timeofDawn-6) && hours < timeofDawn)
         {
             ppv.weight = 1 - (float)mins / 60;
 

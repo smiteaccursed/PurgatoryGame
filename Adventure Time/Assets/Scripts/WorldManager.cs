@@ -32,7 +32,7 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            return null; // Если чанк не найден, возвращаем null
+            return null; 
         }
     }
 
@@ -115,7 +115,7 @@ public class WorldManager : MonoBehaviour
         public GameObject WallPrefab;
         private Vector2Int Position; // коорды чанка
         private int chunkSize; // размер чанка
-        private TileArray tileManager;
+        private TileArray tileManager; // Надо будет попробовать удалять из памяти при окночательной генерации ( хотя как сделать сохранения ....?)
         private int seed;
         private int[,] wallsMap; // битовая карта с запасом на 1 блок 
         public bool isPreload = false;
@@ -353,17 +353,14 @@ public class WorldManager : MonoBehaviour
 
         public void UpdateTileAndNeighbors(Vector2Int tileCoord)
         {
-            // Обновляем текущий тайл
-
-            // Обновляем соседние тайлы
             for (int i = -1; i <= 1; i++)
             {
                 for (int j = -1; j <= 1; j++)
                 {
-                    if (!(i == 0 && j == 0)) // Пропускаем центральный тайл
+                    if (!(i == 0 && j == 0))
                     {
                         Vector2Int neighborPos = new Vector2Int(tileCoord.x + i, tileCoord.y + j);
-                        UpdateTileSprite(neighborPos); // Обновляем спрайт соседа
+                        UpdateTileSprite(neighborPos);
                     }
                 }
             }
@@ -392,9 +389,9 @@ public class WorldManager : MonoBehaviour
                 }
             });
             isPreload = true;
-            Debug.Log("Терраформирование успешно завершено, запускаю генерацию ландшафта");
-            Debug.Log($"{Position.x}  {Position.y}");
-            Print2DArray(wallsMap);
+            //Debug.Log("Терраформирование успешно завершено, запускаю генерацию ландшафта");
+           // Debug.Log($"{Position.x}  {Position.y}");
+           // Print2DArray(wallsMap);
             Generates();
 
         }
@@ -422,7 +419,6 @@ public class WorldManager : MonoBehaviour
                             wallsMap[i + 1, j + 1] = 1;
                         }
 
-                        // Если после округления получилось 0, даем 10% шанс поставить 1
                         else if (wallsMap[i + 1, j + 1] == 0 && rand.NextDouble() < 0.02)
                         {
                             wallsMap[i + 1, j + 1] = 1;
@@ -542,6 +538,7 @@ public class WorldManager : MonoBehaviour
                 if (!chunks.ContainsKey(chunkCoord))
                 {
                     GameObject chunkObject = new GameObject("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y+" )");
+                    chunkObject.transform.SetParent(parentObject);
                     chunkObject.transform.position = new Vector3(chunkCoord.x * chunkSize, chunkCoord.y * chunkSize, 0);
                     Grid grid = chunkObject.AddComponent<Grid>();
                     Tilemap newGrassTilemap = chunkObject.AddComponent<Tilemap>();
@@ -549,8 +546,7 @@ public class WorldManager : MonoBehaviour
                     renderer.sortingOrder = -1;
                     Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed);
                     chunks[chunkCoord] = newChunk;
-                    chunkObject.transform.SetParent(parentObject);
-                    if(!isStruct)
+                     if(!isStruct)
                     {
                         var random = new System.Random(seed);
                         if (random.Next(0+counter, 10) == 10) // 10% вероятность. Псевдорандом
