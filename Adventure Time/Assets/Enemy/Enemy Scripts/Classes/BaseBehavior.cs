@@ -31,6 +31,7 @@ public class BaseBehavior : IEnemyBehavior
         }
         else
         {
+            enemy.animator.CrossFade("Idle",0f);
             enemy.animator.SetFloat("Speed", 0);
             enemy.Wander();
         }

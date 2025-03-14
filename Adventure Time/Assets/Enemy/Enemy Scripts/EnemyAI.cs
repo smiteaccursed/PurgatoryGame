@@ -132,7 +132,8 @@ public class EnemyAI : MonoBehaviour
     public void Attack()
     {
         isAttacking = true;
-        animator.SetTrigger("Attack");
+        //animator.SetTrigger("Attack");
+        animator.CrossFade("Attack", 0.1f);
         lastAttackTime = Time.time;
 
         StartCoroutine(ResetAttackState());
@@ -154,6 +155,17 @@ public class EnemyAI : MonoBehaviour
     public void SetBehavior(IEnemyBehavior newBehavior)
     {
         behavior = newBehavior;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        animator.CrossFade("Hurt", 0.1f);
+        HP -= damage;
+        if (HP <= 0)
+        {
+            animator.CrossFade("Death", 0.1f);
+            Destroy(gameObject);
+        }
     }
 }
  

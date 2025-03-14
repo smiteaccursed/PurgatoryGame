@@ -12,5 +12,9 @@ public class Weapon : MonoBehaviour
         {
             block.TakeDamage(damage);
         }
+        EnemyAI enemyAI = collision.GetComponent<EnemyAI>();
+        if(enemyAI!= null)
+        enemyAI.TakeDamage(damage);
+
     }
 }
