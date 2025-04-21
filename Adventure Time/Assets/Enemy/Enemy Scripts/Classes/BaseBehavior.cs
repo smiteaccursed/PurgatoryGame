@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class BaseBehavior : IEnemyBehavior
 {
-    public string className = "нормис";
+    public virtual string ClassName { get; set; } = "нормис";
     public string GetName()
     {
-        return className;
+        return ClassName;
     }
-    public void Execute(EnemyAI enemy)
+
+    public virtual void Execute(EnemyAI enemy)
     {
 
         if (enemy.TargetInSight())
@@ -35,5 +36,18 @@ public class BaseBehavior : IEnemyBehavior
             enemy.animator.SetFloat("Speed", 0);
             enemy.Wander();
         }
+    }
+
+    public virtual void OnDamage(EnemyAI enemy)
+    {
+
+    }
+    public virtual void OnDeath(EnemyAI enemy)
+    {
+
+    }
+    public virtual void OnHurt(EnemyAI enemy)
+    {
+
     }
 }

@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Параметры НПС")]
     public float HP;
     public float maxHP;
+    public float damage;
     public int level;
     public string enemyName;
     public string enemyClassName;
@@ -39,7 +40,7 @@ public class EnemyAI : MonoBehaviour
         animator = GetComponent<Animator>();
         lastSeenPosition = transform.position;
 
-        SetBehavior(new BaseBehavior());
+        SetBehavior(new VampireBehavior());
 
         level = Mathf.RoundToInt(rb.position.magnitude / 16);
         HP = maxHP;

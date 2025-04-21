@@ -14,12 +14,14 @@ public class WorldManager : MonoBehaviour
     
     public string configFilePath;
     public string configStructPath;
+    public string configHubStructPath;
     private Vector3 lastPlayerPosition;
     public int seed=0;
     private Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
     public TileArray tileManager = new TileArray();
     private static WorldManager instance;
     private StructureManager structures = new StructureManager();
+    private StructureManager hubStuct = new StructureManager();
     private int counter = 0;
     public Material material4Tilemap;
     public Transform parentObject;
@@ -74,7 +76,7 @@ public class WorldManager : MonoBehaviour
                 return SpriteArr[256].GetSprite(); 
             }
         }
-        public bool isBuf(int mask)
+        public bool IsBuf(int mask)
         {
             if (SpriteArr[mask] != null)
             {
@@ -119,10 +121,10 @@ public class WorldManager : MonoBehaviour
         private int seed;
         private int[,] wallsMap; // битовая карта с запасом на 1 блок 
         public bool isPreload = false;
-
+        private GameObject chunkObject;
         public SpriteData[] SpriteArr;
 
-        public Chunk(Vector2Int position, Tilemap grassmap, GameObject wall, int chunkSize, TileArray tileArray, int seed)  
+        public Chunk(Vector2Int position, Tilemap grassmap, GameObject wall, int chunkSize, TileArray tileArray, int seed, GameObject chunkObject)  
         {
             Position = position;
             grassTilemap = grassmap;
@@ -130,6 +132,7 @@ public class WorldManager : MonoBehaviour
             this.chunkSize = chunkSize;
             tileManager = tileArray;
             this.seed = seed;
+            this.chunkObject = chunkObject;
         }
 
         public void Generates()
@@ -177,6 +180,7 @@ public class WorldManager : MonoBehaviour
             if(!isPreload)
             {
                 await WallGeneration();
+                await PostGen();
             }
 
             await Task.Run(() =>
@@ -185,10 +189,10 @@ public class WorldManager : MonoBehaviour
                 {
                     for (int y = 0; y < chunkSize; y++)
                     {
-                        if (wallsMap[x + 1, y + 1] == 1)
+                        if (wallsMap[x + 1, y + 1] > 0)
                         {
                             var position = new Vector3(x + Position.x * chunkSize, y + Position.y * chunkSize, 0);
-                            int mask = GetBitMask(new Vector2Int(x, y));
+                            int mask = GetBitMask(new Vector2Int(x, y),wallsMap[x+1,y+1] );
                             wallsData.Add((position, mask));
                         }
                         else if(wallsMap[x+1,y+1] <0)
@@ -218,14 +222,15 @@ public class WorldManager : MonoBehaviour
                 collider.offset = new Vector2(0.5f, 0.5f);
                 TileClass wallComponent = wall.GetComponent<TileClass>();
                 wallComponent.bit = 0;
-                wallComponent.isbuf = true;
+                wallComponent.isbuf = false ;
+                wall.transform.SetParent(chunkObject.transform.Find("Blocks"));
             }
 
             //Наделение объектов спрайтами
             foreach (var wallData in wallsData)
             {
                 GameObject wall = Instantiate(WallPrefab, wallData.position, Quaternion.identity);
-                wall.transform.parent = grassTilemap.transform;
+                //wall.transform.parent = grassTilemap.transform;
 
               
                 SpriteRenderer s = wall.GetComponent<SpriteRenderer>();
@@ -236,7 +241,7 @@ public class WorldManager : MonoBehaviour
                 if (wallComponent != null)
                 {
                     wallComponent.bit = wallData.mask;
-                    if(tileManager.isBuf(wallData.mask))
+                    if(tileManager.IsBuf(wallData.mask))
                     {
                         wallComponent.isbuf = true;
                     }
@@ -245,9 +250,10 @@ public class WorldManager : MonoBehaviour
                         wallComponent.isbuf = false;
                     }
                 }
+                wall.transform.SetParent(chunkObject.transform.Find("Blocks"));
             }
         }
-        public int GetBitMask(Vector2Int pos)
+        public int GetBitMask(Vector2Int pos, int baseLayer)
         {
             //Debug.Log($"info about {pos.x} {pos.y}");
             int x = pos.x+1;
@@ -260,8 +266,8 @@ public class WorldManager : MonoBehaviour
                 {
                     if (!(i == 0 && j == 0))
                     {
-                        
-                        if ((wallsMap[x + i, y + j] == 1))
+
+                        if ((wallsMap[x + i, y + j] >= baseLayer))
                         {
                             //Debug.Log($"Block {x + i - 1} {y + j -1}  {bitMask[con]}");
                             bitmask += bitMask[con];
@@ -365,7 +371,7 @@ public class WorldManager : MonoBehaviour
                 }
             }
         }
-        public async void ChunkPreGen(int[][] structMap, SpriteData[] StructSprites)
+        public async void ChunkPreGen(int[][] structMap, SpriteData[] StructSprites, bool shift)
         {
             //Debug.Log("Запуск очистки чанка");
             //ClearChunk();
@@ -375,6 +381,9 @@ public class WorldManager : MonoBehaviour
             Debug.Log("Запуск разметки");
             await WallGeneration();
             Debug.Log("Разметка структуры");
+            int tempShift = 2;
+            if (shift)
+                tempShift = 1;
             await Task.Run(() =>
             {
                 for (int i = 0; i < structMap.Length; i++)
@@ -383,15 +392,16 @@ public class WorldManager : MonoBehaviour
                     {
                         if (structMap[i][j] >= 0)
                         {
-                            wallsMap[i + 2, j + 2] = -1 * structMap[i][j];
+                            wallsMap[i + tempShift, j + tempShift] = -1 * structMap[i][j];
                         }
                     }
                 }
             });
             isPreload = true;
             //Debug.Log("Терраформирование успешно завершено, запускаю генерацию ландшафта");
-           // Debug.Log($"{Position.x}  {Position.y}");
-           // Print2DArray(wallsMap);
+            // Debug.Log($"{Position.x}  {Position.y}");
+            // Print2DArray(wallsMap);
+            await PostGen();
             Generates();
 
         }
@@ -400,7 +410,7 @@ public class WorldManager : MonoBehaviour
         {
             await Task.Run(() =>
             {
-                System.Random rand = new System.Random(); // Создаём объект для генерации случайных чисел
+                System.Random rand = new System.Random(seed); // Создаём объект для генерации случайных чисел
 
                 for (int i = -1; i <= chunkSize; i++)
                 {
@@ -411,23 +421,45 @@ public class WorldManager : MonoBehaviour
                         float buf = (float)ChunkNoiseGenerator.GenerateNoise(
                             1, 1, seed, 20.0f, 4, 0.5f, 2.0f, new Vector2Int(realX, realY))[0, 0];
 
-                        wallsMap[i + 1, j + 1] = Mathf.RoundToInt(buf);
+                        //wallsMap[i + 1, j + 1] = Mathf.RoundToInt(buf);
+                        if (buf > 0.7)
+                            wallsMap[i + 1, j + 1] = 2;
+                        else if (buf > 0.5)
+                        {
+                            wallsMap[i + 1, j + 1] = 1;
+                        }
 
                         // Если значение меньше 0.2, ставим 1 (стена)
                         if (buf < 0.2)
                         {
                             wallsMap[i + 1, j + 1] = 1;
                         }
-
                         else if (wallsMap[i + 1, j + 1] == 0 && rand.NextDouble() < 0.02)
                         {
                             wallsMap[i + 1, j + 1] = 1;
                         }
                     }
                 }
+                 
             });
         }
 
+        private async Task PostGen()
+        {
+            await Task.Run(() =>
+            {
+                for (int i = 1; i < chunkSize; i++)
+                {
+                    for (int j = 1; j < chunkSize; j++)
+                    {
+                        int buf = wallsMap[i, j];
+
+                        if (buf - wallsMap[i, j - 1] > 1)
+                           wallsMap[i, j] = buf - 1;
+                    }
+                }
+            });
+        }
         public void ClearChunk()
         {
             // Очистка травы
@@ -456,8 +488,20 @@ public class WorldManager : MonoBehaviour
         LoadJsonData(configFilePath);
 
         structures.LoadJson(configStructPath);
+        structures.seed = seed;
         structures.chunkSize = chunkSize-1;//отступ от границы
         structures.ChunkingAll();
+
+        hubStuct.LoadJson(configHubStructPath);
+        hubStuct.chunkSize = chunkSize;
+        hubStuct.seed = seed;
+        hubStuct.ChunkingAll();
+
+
+        GenerateChunk(new Vector2Int(0, 0), hubStuct.GetStructureByName("Hub 0 0"));
+        GenerateChunk(new Vector2Int(0, -1), hubStuct.GetStructureByName("Hub 0 -1"));
+        GenerateChunk(new Vector2Int(-1, -1), hubStuct.GetStructureByName("Hub -1 -1"));
+        GenerateChunk(new Vector2Int(-1, 0), hubStuct.GetStructureByName("Hub -1 0"));
 
         GenerateChunks();
     }
@@ -539,12 +583,14 @@ public class WorldManager : MonoBehaviour
                 {
                     GameObject chunkObject = new GameObject("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y+" )");
                     chunkObject.transform.SetParent(parentObject);
+                    GameObject blocks = new GameObject("Blocks");
+                    blocks.transform.SetParent(chunkObject.transform);
                     chunkObject.transform.position = new Vector3(chunkCoord.x * chunkSize, chunkCoord.y * chunkSize, 0);
                     Grid grid = chunkObject.AddComponent<Grid>();
                     Tilemap newGrassTilemap = chunkObject.AddComponent<Tilemap>();
                     TilemapRenderer renderer = chunkObject.AddComponent<TilemapRenderer>();
                     renderer.sortingOrder = -1;
-                    Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed);
+                    Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed, chunkObject);
                     chunks[chunkCoord] = newChunk;
                      if(!isStruct)
                     {
@@ -552,7 +598,7 @@ public class WorldManager : MonoBehaviour
                         if (random.Next(0+counter, 10) == 10) // 10% вероятность. Псевдорандом
                         {
                             Debug.Log($"Structure spawned at chunk: ({chunkCoord.x}, {chunkCoord.y})");
-                            structures.GetRndStruct().SpawnStruct(chunkCoord);
+                            structures.GetRndStruct().SpawnStruct(chunkCoord, false);
                             isStruct = true;
                             counter = 0;
                         }
@@ -602,6 +648,26 @@ public class WorldManager : MonoBehaviour
                 chunk.grassTilemap.gameObject.SetActive(false);  
             }
         }
+    }
+
+    void GenerateChunk(Vector2Int coords, StructureData structure)
+    {
+        Vector2Int chunkCoord =coords;
+        GameObject chunkObject = new GameObject("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y + " )");
+        GameObject blocks = new GameObject("Blocks");
+        blocks.transform.SetParent(chunkObject.transform);
+        chunkObject.transform.SetParent(parentObject);
+        chunkObject.transform.position = new Vector3(chunkCoord.x * chunkSize, chunkCoord.y * chunkSize, 0);
+        Grid grid = chunkObject.AddComponent<Grid>();
+        Tilemap newGrassTilemap = chunkObject.AddComponent<Tilemap>();
+        TilemapRenderer renderer = chunkObject.AddComponent<TilemapRenderer>();
+        renderer.sortingOrder = -1;
+        Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed, chunkObject);
+        chunks[chunkCoord] = newChunk;
+        structure.SpawnStruct(chunkCoord, true);
+        Debug.Log($"{structure.name} - создан ");
+        newChunk.Generates();
+        Debug.Log("Генерируем чанк по шаблону");
     }
 
 }

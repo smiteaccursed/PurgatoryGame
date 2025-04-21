@@ -52,28 +52,28 @@
             "variantWeights": [
                 {"name": "TX Tileset Wall_24", "weight": 1}
             ],
-            "bitMask": [22,150, 23, 151, 182, 190]
+            "bitMask": [22,119,30,62, 158, 150,87, 23, 151, 182, 190, 183, 86]
         },
         {
             "name": "LeftUp", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_0", "weight": 1}
             ],
-            "bitMask": [208, 209, 240, 244, 212, 210]
+            "bitMask": [208,241,218,217,220, 209, 240, 244, 212, 210, 242,216]
         },
         {
             "name": "MidUp", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_1", "weight": 1}
             ],
-            "bitMask": [74, 252, 248, 249, 250, 253]
+            "bitMask": [74, 248, 249, 250, 253, 252]
         },
         {
             "name": "RightUp", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_2", "weight": 1}
             ],
-            "bitMask": [104,105, 120, 232, 233, 238, 124]
+            "bitMask": [104,237,121, 109, 234,105,236, 234, 120, 232, 233, 238, 124,108]
         },
         {
             "name": "LeftMid", 
@@ -94,28 +94,28 @@
             "variantWeights": [
                 {"name": "TX Tileset Wall_3", "weight": 1}
             ],
-            "bitMask": [127]
+            "bitMask": [127, 126]
         },
         {
             "name": "RightMid", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_9", "weight": 1}
             ],
-            "bitMask": [107, 235, 111, 239]
+            "bitMask": [107, 235, 111, 239,123]
         },
         {
             "name": "MidDownd", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_25", "weight": 1}
             ],
-            "bitMask": [31, 95, 159, 63]
+            "bitMask": [31,191, 95, 159, 63]
         },
         {
             "name": "RightDown", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_26", "weight": 1}
             ],
-            "bitMask": [11, 139, 15, 43, 203, 47,30]
+            "bitMask": [11,91,175,59, 27, 171, 139, 15, 43, 203, 47, 79, 155]
         },
         {
             "name": "BUF", 

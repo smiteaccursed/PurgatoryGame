@@ -4,10 +4,14 @@ using System.IO;
 using UnityEngine;
 using System;
 
+
+// НЕ ЗАБЫВАЕМ ЧТО РАЗМЕР СТРУКТУРЫ РАВЕН РАЗМЕР ЧАНКА + ОТСТУП 1 БЛОК С КАЖДОЙ СТОРОНЫ
+// У МЕНЯ  16 размер чанка, поэтому размер структуры 14
 public class StructureManager
 {
     public StructureContainer structure;
     public int chunkSize;
+    public int seed;
     public void LoadJson(string path)
     {
         string jsonText = File.ReadAllText(path);
@@ -38,12 +42,24 @@ public class StructureManager
         {
             s.GetMaskData();
             s.ChunkingStruct(chunkSize);
+            Debug.Log(chunkSize + " Размер чанка");
         }
     }
 
+    public StructureData GetStructureByName(string name)
+    {
+        foreach(var s in structure.structures)
+        {
+            if (s.name == name)
+                return s;
+        }
+        return GetRndStruct();
+    }
+
+
     public StructureData GetRndStruct()
     {
-        System.Random random = new System.Random();
+        System.Random random = new System.Random(seed);
         int randomIndex = random.Next(structure.structures.Count); // Генерация случайного индекса
         return structure.structures[randomIndex];
     }
@@ -122,7 +138,7 @@ public class StructureData
         Debug.Log($"{name} {chunkCols}  {chunkRows} chunking result");
 
     }
-    public void SpawnStruct(Vector2Int cords)
+    public void SpawnStruct(Vector2Int cords, bool Shift)
     {
         Debug.Log("Готовность к спавну");
         int startX = cords.x;
@@ -141,7 +157,8 @@ public class StructureData
                 if (chnk != null)
                 {
                     Debug.Log($"Чанк найден, запуск генерации");
-                    chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr);
+                    chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr, Shift);
+                    //PrintChunkStruct(chunkStruct[i][j]);
                     //chnk.ChunkPreGen(maskData, spriteData.SpriteArr);
                 }
                 else
@@ -152,6 +169,18 @@ public class StructureData
         }
     }
 
+    void PrintChunkStruct(int[][] chunkStruct)
+    {
+        string output = "chunkStruct:\n";
+
+        for (int i = 0; i < chunkStruct.Length; i++)
+        {
+            output += string.Join(", ", chunkStruct[i]) + "\n"; // Преобразуем каждую строку в текст
+        }
+
+        Debug.Log(output);
+    }
+
     public void GetMaskData()
     {
         maskData = new int[size + 2][];
@@ -160,16 +189,24 @@ public class StructureData
             maskData[i] = new int[size + 2];
         }
 
-        Debug.Log("rawData initialization: " + (rawData != null ? "Initialized" : "Null"));
+        Debug.Log("rawData initialization: " + (rawData != null ? "Initialized" : "Null") + "size" + (size +2));
 
         // Заполняем центральную часть массива значениями из rawData
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                maskData[i + 1][j + 1] = rawData[i * size + j];
+                maskData[j + 1][size - i] = rawData[i * size + j];
             }
         }
+
+        string output = "";
+        for (int i = 0; i < size + 2; i++)
+        {
+            output += string.Join(", ", maskData[i]) + "\n"; // Добавляем строку массива
+        }
+
+        Debug.Log(output);
     }
 }
 
@@ -227,4 +264,7 @@ public class StructSpriteData
         }
     }
 
+     
 }
+
+
