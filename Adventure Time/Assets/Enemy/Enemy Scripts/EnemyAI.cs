@@ -160,6 +160,7 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+
         animator.CrossFade("Hurt", 0.1f);
         HP -= damage;
         if (HP <= 0)

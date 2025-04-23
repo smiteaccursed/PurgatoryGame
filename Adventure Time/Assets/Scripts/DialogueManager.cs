@@ -13,6 +13,9 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
+    [Header("Hidden UI")]
+    [SerializeField] private GameObject[] UI2hide;
+
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
@@ -97,6 +100,10 @@ public class DialogueManager : MonoBehaviour
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
+        foreach(GameObject s in UI2hide)
+        {
+            s.SetActive(false);
+        }
 
         ContinueStory();
     }
@@ -105,6 +112,10 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
+        foreach (GameObject s in UI2hide)
+        {
+            s.SetActive(true);
+        }
         dialogueText.text = "";
     }
 
