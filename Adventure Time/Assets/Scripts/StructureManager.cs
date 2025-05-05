@@ -80,7 +80,7 @@ public class StructureData
     public int[] rawData;
     public int size;
     public StructSpriteData spriteData;
-    
+    public List<Entity> entities;
     public List<List<int[][]>> chunkStruct; // Куски структур если не помещаются в чанк
     private int chunkRows;
     private int chunkCols;
@@ -156,8 +156,8 @@ public class StructureData
 
                 if (chnk != null)
                 {
-                    Debug.Log($"Чанк найден, запуск генерации");
-                    chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr, Shift);
+                    Debug.Log($"Чанк найден, запуск генерации, сущностьей " );
+                    chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr, Shift, entities);
                     //PrintChunkStruct(chunkStruct[i][j]);
                     //chnk.ChunkPreGen(maskData, spriteData.SpriteArr);
                 }
@@ -210,6 +210,28 @@ public class StructureData
     }
 }
 
+
+[System.Serializable]
+public class Entity
+{
+    public string name;
+    public string prefabPath;
+
+    public Vector2Int position;
+
+    public void SpawnEntity(Vector2Int pos, string name, GameObject chunk)
+    {
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
+        if(prefab != null)
+        {
+            Vector3Int spawnpos = new Vector3Int(pos.x, pos.y, 0);
+            GameObject go = GameObject.Instantiate(prefab, spawnpos, Quaternion.identity);
+            go.name = name;
+            go.transform.SetParent(chunk.transform.Find("Entities"));
+        }
+    }
+}
+
 [System.Serializable]
 public class StructSpriteData
 {
@@ -219,7 +241,7 @@ public class StructSpriteData
     public List<SpriteData> sprites;
     public int spriteMaxNum;
     public List<SpriteSheet> spriteSheets;
-   
+ 
     public Sprite GetSpritebyName(string name)
     {
         foreach (var sprite in sprites)

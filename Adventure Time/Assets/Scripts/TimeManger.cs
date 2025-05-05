@@ -1,11 +1,15 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+
+
 public class TimeManger : MonoBehaviour
 {
+
+    public static event Action<bool> OnNightStateChanged;
 
     public Volume ppv;
 
@@ -16,8 +20,10 @@ public class TimeManger : MonoBehaviour
     public int days = 1;
     public int timeofDawn = 7;
     public int timeofSunset = 22;
+    private bool prevIsNight = false;
 
     public bool isLights =false;
+    
     public List<GameObject> lights = new List<GameObject>();
     public Image MinImage;
     public Image HourImage;
@@ -80,7 +86,6 @@ public class TimeManger : MonoBehaviour
             hours = 0;
             days += 1;
             PlayerCampfire.Instance.ResetCampfireCount();
-            lights.RemoveAll(light => light == null);
         }
         ControlPPV();
     }
@@ -95,18 +100,22 @@ public class TimeManger : MonoBehaviour
             {
                 if (mins > 45)
                 {
+                    CleanUpNullLights();
                     foreach (var light in lights)
                     {
                         light.SetActive(true);
                     }
+                    isLights = true;
+                    OnNightStateChanged?.Invoke(isLights);
                 }
-                isLights = true;
+                 
             }
         }
 
 
-        if (hours >= (timeofDawn-6) && hours < timeofDawn)
+        if (hours >= (timeofDawn-1) && hours < timeofDawn)
         {
+           
             ppv.weight = 1 - (float)mins / 60;
 
             
@@ -114,12 +123,15 @@ public class TimeManger : MonoBehaviour
             {
                 if (mins > 45)
                 {
+                    CleanUpNullLights();
                     foreach (var light in lights)
                     {
                         light.SetActive(false);
                     }
+                    isLights = false;
+                    OnNightStateChanged?.Invoke(isLights);
                 }
-                isLights = false;
+                 
             }
         }
     }
@@ -142,10 +154,19 @@ public class TimeManger : MonoBehaviour
     public void RegisterNewLight(GameObject light)
     {
         lights.Add(light);
+        if (isLights)
+            light.SetActive(true);
+        else
+            light.SetActive(false);
     }
 
     public bool IsNight()
     {
         return isLights;
+    }
+
+    public void CleanUpNullLights()
+    {
+        lights.RemoveAll(light => light == null);
     }
 }

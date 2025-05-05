@@ -7,6 +7,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Параметры ИИ")]
     public Transform target;
     public float speed = 2f;
+    public float baseSpeed=2f;
     public float detectionRange = 10f;
     public float attackRange = 1.5f;
     public float attackCooldown = 1f;
@@ -15,11 +16,14 @@ public class EnemyAI : MonoBehaviour
     public float HP;
     public float maxHP;
     public float damage;
+    public float baseDMG;
     public int level;
     public string enemyName;
     public string enemyClassName;
     public IEnemyBehavior behavior;
     public Transform AttackZone;
+    public GameObject Weapon;
+    public EnemyWeapon enemyWeapon;
 
     [Header("Внутренние данные для поведения")]
     public Rigidbody2D rb;
@@ -32,21 +36,37 @@ public class EnemyAI : MonoBehaviour
     public float lastAttackTime;
     public Vector2 moveDirection;
     public EnemyUI enemyUI;
+    public float attackAnimDuration = 0.5f;
+    private Collider2D meleeCollider;
+    private SpriteRenderer meleeRenderer;
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        enemyWeapon = Weapon.GetComponent<EnemyWeapon>();
         lastSeenPosition = transform.position;
 
-        SetBehavior(new VampireBehavior());
+        if(behavior == null)
+            SetBehavior(new VampireBehavior());
 
         level = Mathf.RoundToInt(rb.position.magnitude / 16);
+        maxHP = maxHP * Mathf.Pow(1.035f, level);
+
+        enemyWeapon.damage *= Mathf.Pow(1.02f, level);
+        damage = enemyWeapon.damage;
+        baseDMG = damage;
         HP = maxHP;
         enemyClassName = behavior.GetName();
         enemyUI = GetComponentInChildren<EnemyUI>();
         enemyUI.SetName();
+        target = GameObject.FindWithTag("Player").transform;
+        meleeCollider = Weapon.GetComponent<Collider2D>();
+        meleeRenderer = Weapon.GetComponent<SpriteRenderer>();
+
+        TimeManger.OnNightStateChanged += HandleNightStateChanged;
+        behavior?.OnNightChange(this, TimeManger.GetInstance().isLights);
     }
 
     void Update()
@@ -96,6 +116,12 @@ public class EnemyAI : MonoBehaviour
         return false;
     }
 
+    public void ChangeDamage(float dmg)
+    {
+        damage += dmg;
+        enemyWeapon.damage = dmg;
+    }
+
     public void MoveTo(Vector2 target, Vector2 direction)
     {
         if (isAttacking) return;
@@ -123,9 +149,18 @@ public class EnemyAI : MonoBehaviour
     
     void SetRandomDestination()
     {
-        Vector2 randomDirection = Random.insideUnitCircle.normalized * 3f;
-        lastSeenPosition = (Vector2)transform.position + randomDirection;
-        moveDirection = (lastSeenPosition - (Vector2)transform.position);
+        
+        Vector2 origin = transform.position;
+        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+        float maxDistance = Random.Range(1f, 7f);
+
+        RaycastHit2D hit = Physics2D.Raycast(origin, randomDirection, maxDistance, obstaclesLayer);
+
+        float distanceToMove = hit.collider != null ? hit.distance : maxDistance;
+        Vector2 destination = origin + randomDirection * distanceToMove;
+
+        lastSeenPosition = destination;
+        moveDirection = destination - origin;
 
         animator.SetFloat("DirectionX", moveDirection.x);
         animator.SetFloat("DirectionY", moveDirection.y);
@@ -133,22 +168,40 @@ public class EnemyAI : MonoBehaviour
     public void Attack()
     {
         isAttacking = true;
+        meleeCollider.enabled = true;
+        meleeRenderer.enabled = true;
         //animator.SetTrigger("Attack");
         animator.CrossFade("Attack", 0.1f);
         lastAttackTime = Time.time;
-
+        behavior?.OnDamage(this);
+        StartCoroutine(ResetWeapon());
         StartCoroutine(ResetAttackState());
     }
 
+
+    IEnumerator ResetWeapon()
+    {
+        yield return new WaitForSeconds(0.1f);
+        meleeCollider.enabled = false;
+        meleeRenderer.enabled = false;
+    }
+
+    IEnumerator Death()
+    {
+        yield return new WaitForSeconds(0.4f);
+        behavior?.OnDeath(this);
+        PlayerStats.Instance.GetExpReward(level);
+        Destroy(gameObject);
+    }
     IEnumerator ResetAttackState()
     {
-        yield return new WaitForSeconds(attackCooldown);
+        yield return new WaitForSeconds(attackAnimDuration);
 
         isAttacking = false;
         if (!isAttacking)
         {
-            rb.constraints = RigidbodyConstraints2D.None; 
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
+            //rb.constraints = RigidbodyConstraints2D.None; 
+            //rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
         }
     }
 
@@ -160,14 +213,21 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-
+        behavior?.OnHurt(this);
         animator.CrossFade("Hurt", 0.1f);
         HP -= damage;
+        HP = Mathf.Round(HP * 10f) / 10f;
+        enemyUI.SetName();
         if (HP <= 0)
         {
             animator.CrossFade("Death", 0.1f);
-            Destroy(gameObject);
+            StartCoroutine(Death());
         }
+    }
+
+    private void HandleNightStateChanged(bool isNight)
+    {
+        behavior?.OnNightChange(this, isNight);
     }
 }
  

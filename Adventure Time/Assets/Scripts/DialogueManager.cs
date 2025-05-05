@@ -21,8 +21,12 @@ public class DialogueManager : MonoBehaviour
     private TextMeshProUGUI[] choicesText;
     private Story currentStory;
 
+
     [SerializeField] private GameObject player;
     private PlayerMovment playerScript;
+    private PlayerStats playerStats;
+
+    private GameObject currentTrigger;
 
     public int currentChoiceIndex = 0;
 
@@ -98,15 +102,47 @@ public class DialogueManager : MonoBehaviour
     public void EnterDialogueMode(TextAsset inkJSON)
     {
         currentStory = new Story(inkJSON.text);
+        currentStory.BindExternalFunction("apply_boost", (string type, int value) => {
+            ApplyPlayerBoost(type, value);
+            Debug.Log($"Function 'apply_boost' called with type: {type}, value: {value}");
+        });
+        currentStory.BindExternalFunction("destroy_statue", () => {
+            DestroyCurrentTrigger();
+        });
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
         foreach(GameObject s in UI2hide)
         {
             s.SetActive(false);
         }
+       
 
         ContinueStory();
     }
+
+    private void ApplyPlayerBoost(string type, int value)
+    {
+        if (playerStats == null)
+            playerStats = player.GetComponent<PlayerStats>();
+
+        switch (type)
+        {
+            case "health":
+                playerStats.changeHP(value);
+                Debug.Log("ура + здоровье");
+                break;
+            case "damage":
+                playerStats.changeDamage(value);
+                break;
+            case "mana":
+                playerStats.changeMana(value);
+                break;
+            default:
+                Debug.LogWarning("Неизвестный тип бонуса: " + type);
+                break;
+        }
+    }
+
 
     private void ExitDialogueMode()
     {
@@ -190,5 +226,20 @@ public class DialogueManager : MonoBehaviour
         hasChoise = false;
         //ContinueStory();
     }
+
+    public void SetCurrentTrigger(GameObject trigger)
+    {
+        currentTrigger = trigger;
+    }
+
+    private void DestroyCurrentTrigger()
+    {
+        if (currentTrigger != null)
+        {
+            Destroy(currentTrigger);
+            currentTrigger = null;
+        }
+    }
+
 }
 

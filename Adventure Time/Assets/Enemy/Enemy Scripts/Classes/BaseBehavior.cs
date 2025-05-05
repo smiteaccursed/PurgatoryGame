@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BaseBehavior : IEnemyBehavior
 {
@@ -50,4 +51,8 @@ public class BaseBehavior : IEnemyBehavior
     {
 
     }
+    public virtual Action<EnemyAI, bool> OnNightChange => (enemy, isNight) =>
+    {
+
+    };
 }

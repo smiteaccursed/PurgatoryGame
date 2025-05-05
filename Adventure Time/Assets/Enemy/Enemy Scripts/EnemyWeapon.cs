@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class EnemyWeapon : MonoBehaviour
 {
-    //public float damage = 30;
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    TileClass block = collision.GetComponent<TileClass>();
-    //    if (block != null && block.isbuf)
-    //    {
-    //        block.TakeDamage(damage);
-    //    }
-    //}
+    public float damage = 30;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        PlayerStats playerStats = collision.GetComponent<PlayerStats>();
+        if (playerStats != null)
+            playerStats.GetDamage(damage);
+        Debug.Log("Player take dmg!");
+    }
 }

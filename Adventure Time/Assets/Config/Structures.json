@@ -7,7 +7,7 @@
             "rawData":[
                 1,0,0,0,1,
                 0,0,0,0,0,
-                1,0,2,0,1,
+                1,0,0,0,1,
                 0,0,0,0,0,
                 1,0,0,0,1],
             
@@ -22,6 +22,11 @@
             "sprites":
             [
                 {
+                    "name": "Hollow", 
+                    "variantWeights": [ ],
+                    "bitMask": [0]
+                },
+                {
                     "name": "Column", 
                     "variantWeights": [
                         {"name": "TX Props_28", "weight": 1},
@@ -33,14 +38,20 @@
                     "variantWeights": [
                         {"name": "TX Props_7", "weight": 1} ],
                     "bitMask": [2]
-                },
-                {
-                    "name": "Hollow", 
-                    "variantWeights": [ ],
-                    "bitMask": [0]
                 }
             ]
-        }
+        },
+        "entities":
+        [
+            {
+            
+                "name": "Statue",
+                "prefabPath": "Statue",
+                "position":{"x":2, "y":2}
+                
+            }
+        ]
+
         }
     ]
 }

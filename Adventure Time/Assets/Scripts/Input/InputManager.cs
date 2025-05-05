@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
     private bool UIDown = false;
     private bool UIUp = false;
 
+    private bool esc = false;
+
     private void Awake()
     {
         if (instance != null)
@@ -45,6 +47,17 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void ESCPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            esc = true;
+        }
+        else if(context.canceled)
+        {
+            esc = false;
+        }
+    }
 
     public void InteractButtonPressed(InputAction.CallbackContext context)
     {
@@ -146,7 +159,12 @@ public class InputManager : MonoBehaviour
         return moveDirection;
     }
 
-
+    public bool GetESCPressed()
+    {
+        bool result = esc;
+        esc = false;
+        return result;
+    }
     public bool GetInteractPressed()
     {
         bool result = interactPressed;
@@ -185,6 +203,11 @@ public class InputManager : MonoBehaviour
     public void RegisterUIDownPressed()
     {
         UIDown = false;
+    }
+
+    public void RegisterESCPressed()
+    {
+        esc = false;
     }
 
     public bool GetLightAttackPressed()
