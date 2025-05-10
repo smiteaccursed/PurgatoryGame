@@ -109,6 +109,10 @@ public class DialogueManager : MonoBehaviour
         currentStory.BindExternalFunction("destroy_statue", () => {
             DestroyCurrentTrigger();
         });
+        currentStory.BindExternalFunction("give_art", () =>
+         {
+             SpawnArt();
+         });
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
         foreach(GameObject s in UI2hide)
@@ -132,10 +136,10 @@ public class DialogueManager : MonoBehaviour
                 Debug.Log("ура + здоровье");
                 break;
             case "damage":
-                playerStats.changeDamage(value);
+                playerStats.ChangeDamage(value);
                 break;
             case "mana":
-                playerStats.changeMana(value);
+                playerStats.ChangeMana(value);
                 break;
             default:
                 Debug.LogWarning("Неизвестный тип бонуса: " + type);
@@ -200,6 +204,13 @@ public class DialogueManager : MonoBehaviour
         UpdateChoiceHighlight();
     }
 
+    public void SpawnArt()
+    {
+        Vector3 pos =player.transform.position;
+        pos.x += 2;
+        AbilitiesManager.Instance.CreateArt(pos);
+    }
+
     private void UpdateChoiceHighlight()
     {
         for (int i = 0; i < choices.Length; i++)
@@ -236,6 +247,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (currentTrigger != null)
         {
+            DataManager.Instance.activatedStatue.Add(currentTrigger.transform.parent.name);
             Destroy(currentTrigger);
             currentTrigger = null;
         }

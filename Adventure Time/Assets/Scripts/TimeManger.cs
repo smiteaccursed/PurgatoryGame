@@ -10,17 +10,19 @@ public class TimeManger : MonoBehaviour
 {
 
     public static event Action<bool> OnNightStateChanged;
+    public static event Action OnTimeStop;
+    public static event Action OnTimeResume; 
 
     public Volume ppv;
 
     public float tick; // Increasing the tick, increases second rate
+    public float baseTick;
     public float seconds=0;
     public int mins=0;
     public int hours=0;
     public int days = 1;
     public int timeofDawn = 7;
     public int timeofSunset = 22;
-    private bool prevIsNight = false;
 
     public bool isLights =false;
     
@@ -43,7 +45,7 @@ public class TimeManger : MonoBehaviour
     void Start()
     {
         ppv = GetComponent<Volume>();
-         
+        baseTick = tick;
         minRot = (mins +15) * minDeg;
         hourRot = (hours +1)  * hourDeg;
         UpdateMin(minRot);
@@ -168,5 +170,17 @@ public class TimeManger : MonoBehaviour
     public void CleanUpNullLights()
     {
         lights.RemoveAll(light => light == null);
+    }
+
+    public void TriggerTimeStop()
+    {
+        tick = 0;
+        OnTimeStop?.Invoke();
+    }
+
+    public void TriggerTimeResume()
+    {
+        tick = baseTick;
+        OnTimeResume?.Invoke();
     }
 }

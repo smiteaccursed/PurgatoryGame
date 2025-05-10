@@ -8,7 +8,7 @@ public class MersyOfSunEffect : MonoBehaviour
 
     private void Start()
     {
-        stats = GetComponent<PlayerStats>();
+        stats = FindObjectOfType<PlayerStats>();
         if (stats == null)
         {
             Debug.LogError("PlayerStats not found on object!");
@@ -29,8 +29,8 @@ public class MersyOfSunEffect : MonoBehaviour
         if (stats == null) return;
 
         if (isNight)
-            stats.changeMultDMG(0.1f);
+            stats.ChangeMultDMG(0.1f);
         else
-            stats.changeMultDMG(0.9f);
+            stats.ChangeMultDMG(1.9f);
     }
 }

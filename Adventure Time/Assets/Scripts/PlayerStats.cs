@@ -71,13 +71,36 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
-        weapon.damage *= multDMG;
-        damage = weapon.damage;
-        baseDMG = damage;
-        attackDelay = attack.startTimeAttack;
+        if (DataManager.Instance.isExist)
+        {
+            PlayerData pd = DataManager.Instance.saveData;
+            baseDMG = pd.baseDMG;
+            weapon.damage = baseDMG * multDMG;
+            damage = weapon.damage;
+            attackDelay = attack.startTimeAttack;
+            hp = pd.hp;
+            maxHP = pd.maxHP;
+
+            magicPoint = pd.magicPoint;
+            mp = pd.mp;
+
+            lvl = pd.lvl;
+            currentEXP = pd.currentEXP;
+            nextLVLEXP = pd.nextLVLEXP;
+            baseExp = pd.baseExp;
+        }
+        else
+        {
+            baseDMG = weapon.damage;
+            weapon.damage *= multDMG;
+            damage = weapon.damage;
+        }
+        
 
         HealtBarUpdate();
         SwordInfoUpdate();
+        StartCoroutine(RegenerateMana());
+        StartCoroutine(RegenerateHP());
     }
 
     public void changeHP(float mult)
@@ -87,14 +110,14 @@ public class PlayerStats : MonoBehaviour
         HealtBarUpdate();
     }
 
-    public void changeMana(float mult)
+    public void ChangeMana(float mult)
     {
         magicPoint += mult;
         mp += mult;
         ManaBarUpdate();
     }
 
-    public void changeDamage(float dmg)
+    public void ChangeDamage(float dmg)
     {
         baseDMG += dmg;
         damage = baseDMG*multDMG;
@@ -104,13 +127,15 @@ public class PlayerStats : MonoBehaviour
         SwordInfoUpdate();
     }
 
-    public void changeMultDMG(float chng)
+    public void ChangeMultDMG(float chng)
     {
         multDMG = chng;
-        changeDamage(0f);
+        ChangeDamage(0f);
     }
     public void HealtBarUpdate()
     {
+        float temp = Mathf.Round(hp * 10);
+        hp = temp / 10;
         Transform fill = HealtBar.transform.Find("Fill");
         Vector3 scale = fill.localScale;
         scale.x = hp/maxHP;
@@ -122,6 +147,8 @@ public class PlayerStats : MonoBehaviour
 
     public void ManaBarUpdate()
     {
+        float temp = Mathf.Round(mp * 10);
+        mp = temp / 10;
         Transform fill = ManaBar.transform.Find("Fill");
         Vector3 scale = fill.localScale;
         scale.x = mp / magicPoint;
@@ -163,14 +190,48 @@ public class PlayerStats : MonoBehaviour
             currentEXP -= nextLVLEXP;
             nextLVLEXP = 100f + Mathf.Log(lvl + 1) * 50f;
             lvl += 1;
-            lvlUP();
+            LvlUP();
         }
     }
 
-    public void lvlUP()
+    public void LvlUP()
     {
-        changeDamage(1f);
+        ChangeDamage(1f);
         changeHP(15f);
-        changeMana(15f);
+        ChangeMana(15f);
+    }
+
+    private IEnumerator RegenerateMana()
+    {
+        WaitForSeconds delay = new WaitForSeconds(1f);
+
+        while (true)
+        {
+            if (mp < magicPoint)
+            {
+                float regenAmount = magicPoint * 0.01f;
+                mp = Mathf.Min(mp + regenAmount, magicPoint);
+                ManaBarUpdate();
+            }
+
+            yield return delay;
+        }
+    }
+
+    private IEnumerator RegenerateHP()
+    {
+        WaitForSeconds delay = new WaitForSeconds(1f);
+
+        while (true)
+        {
+            if (hp < maxHP)
+            {
+                float regenAmount = maxHP * 0.01f;
+                hp = Mathf.Min(hp + regenAmount, maxHP);
+                HealtBarUpdate();
+            }
+
+            yield return delay;
+        }
     }
 }

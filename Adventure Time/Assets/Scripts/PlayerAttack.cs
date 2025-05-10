@@ -36,17 +36,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        //if (isLAttacking)
-        //{
-        //    CheckMeleeTimer();
-        //}
-
-        //if (InputManager.GetInstance()!=null && InputManager.GetInstance().GetLightAttackPressed())
-        //{
-        //    isAttaking = true;
-        //    OnLightAttack();
-        //}
-
+ 
         if(attackTime <=0)
         {
             if (InputManager.GetInstance() != null && InputManager.GetInstance().GetLightAttackPressed())
@@ -75,6 +65,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!isLAttacking)
         {
+            meleeCollider.enabled = false;
             meleeCollider.enabled = true;
             //meleeRenderer.enabled = true;
             isLAttacking = true;

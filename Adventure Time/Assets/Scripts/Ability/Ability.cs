@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Ability : ScriptableObject
 {
+    public int id;
     public string abilityName;
     public Sprite icon;
 }
@@ -14,11 +15,8 @@ public abstract class PassiveAbility : Ability
 
 public abstract class ActiveAbility : Ability
 {
-    public float manaCostPerSecond;
     public AudioClip activationSound;
-    public Sprite screenEffect;
 
     public abstract void StartAbility(GameObject player);
-    public abstract void UpdateAbility(GameObject player, float deltaTime);
     public abstract void StopAbility(GameObject player);
 }

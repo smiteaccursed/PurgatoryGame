@@ -11,7 +11,7 @@ public class WorldManager : MonoBehaviour
     public int chunkSize = 16;
     public int viewDistance = 2;
     public GameObject WallPrefab;
-    
+
     public string configFilePath;
     public string configStructPath;
     public string configHubStructPath;
@@ -96,7 +96,7 @@ public class WorldManager : MonoBehaviour
             }
             else
             {
-                Debug.Log($"{sprites.Count}");
+                //Debug.Log($"{sprites.Count}");
                 foreach (var sprite in sprites)
                 {
                     foreach(var i in sprite.bitMask)
@@ -341,7 +341,7 @@ public class WorldManager : MonoBehaviour
                 row += "\n";
                  // Выводим строку
             }
-            Debug.Log(row);
+            //Debug.Log(row);
         }
 
 
@@ -380,12 +380,12 @@ public class WorldManager : MonoBehaviour
         {
             //Debug.Log("Запуск очистки чанка");
             //ClearChunk();
-            Debug.Log("Чанк очищен, запуск терраформирования");
+            //Debug.Log("Чанк очищен, запуск терраформирования");
             SpriteArr = StructSprites;
             wallsMap = new int[chunkSize + 2, chunkSize + 2];
-            Debug.Log("Запуск разметки");
+           // Debug.Log("Запуск разметки");
             await WallGeneration();
-            Debug.Log("Разметка структуры");
+           // Debug.Log("Разметка структуры");
             int tempShift = 2;
             if (shift)
                 tempShift = 1;
@@ -410,7 +410,7 @@ public class WorldManager : MonoBehaviour
                 string name = $"S{Position.x}.{Position.y}.{index}";
                 index++;
                 ent.SpawnEntity(tp, name, chunkObject);
-                Debug.Log("Spawn ent " + name);
+                //Debug.Log("Spawn ent " + name);
             }
             isPreload = true;
             //Debug.Log("Терраформирование успешно завершено, запускаю генерацию ландшафта");
@@ -498,10 +498,24 @@ public class WorldManager : MonoBehaviour
             {
                 for(int j =5; j<13; j++)
                 {
-                    if(wallsMap[i,j]==1)
+                    if(wallsMap[i,j]==0)
                     {
                         pos.x = (i - 1) + Position.x * 16;
                         pos.y = (j - 1) + Position.y * 16;
+                        return;
+                    }
+                }
+            }
+
+            for(int i=1; i<chunkSize; i++)
+            {
+                for(int j=1; j<chunkSize; j++)
+                {
+                    if(wallsMap[i,j] ==0)
+                    {
+                        pos.x = (i - 1) + Position.x * 16;
+                        pos.y = (j - 1) + Position.y * 16;
+                        return;
                     }
                 }
             }
@@ -520,6 +534,13 @@ public class WorldManager : MonoBehaviour
         instance = this;
         lastPlayerPosition = player.transform.position;
         UnityMainThreadDispatcher.Instance();
+
+        if(DataManager.Instance.isExist)
+        {
+            seed = DataManager.Instance.saveData.seed;
+            player.transform.position = DataManager.Instance.saveData.playerPosition;
+        }
+             
 
         LoadJsonData(configFilePath);
 
@@ -560,9 +581,9 @@ public class WorldManager : MonoBehaviour
 
         if (tileManager != null && tileManager.tiles != null && tileManager.sprites!=null)
         {
-            Debug.Log("Loaded " + tileManager.tiles.Count + " tiles from JSON.");
-            Debug.Log("Loaded " + tileManager.sprites.Count + " sprites from JSON.");
-            Debug.Log("Loaded " + tileManager.spriteSheets.Count + " sprite sheet JSON");
+            //Debug.Log("Loaded " + tileManager.tiles.Count + " tiles from JSON.");
+            //Debug.Log("Loaded " + tileManager.sprites.Count + " sprites from JSON.");
+            //Debug.Log("Loaded " + tileManager.spriteSheets.Count + " sprite sheet JSON");
             foreach(var dataSheet in tileManager.spriteSheets)
             {
                 dataSheet.LoadSpriteSheet();
@@ -609,7 +630,6 @@ public class WorldManager : MonoBehaviour
             Mathf.FloorToInt(player.transform.position.x / chunkSize),
             Mathf.FloorToInt(player.transform.position.y / chunkSize)
         );
-        bool isStruct = false;
         for (int x = -viewDistance; x <= viewDistance; x++)
         {
             for (int y = -viewDistance; y <= viewDistance; y++)
@@ -632,21 +652,17 @@ public class WorldManager : MonoBehaviour
                     renderer.sortingOrder = -1;
                     Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed, chunkObject);
                     chunks[chunkCoord] = newChunk;
-                    if(!isStruct)
+                    int localSeed = seed + chunkCoord.x * 73856093 + chunkCoord.y * 19349663;
+                    System.Random rng = new System.Random(localSeed);
+                    if (rng.Next(0, 5) == 0) // 10% вероятность. Псевдорандом
                     {
-                        var random = new System.Random(seed);
-                        if (random.Next(0+counter, 10) == 10) // 10% вероятность. Псевдорандом
-                        {
-                            Debug.Log($"Structure spawned at chunk: ({chunkCoord.x}, {chunkCoord.y})");
-                            structures.GetRndStruct().SpawnStruct(chunkCoord, false);
-                            isStruct = true;
-                            counter = 0;
-                        }
-                        else
-                        {
-                            counter++;
-                        }
+                        Debug.Log($"Structure spawned at chunk: ({chunkCoord.x}, {chunkCoord.y})");
+                        structures.GetRndStruct().SpawnStruct(chunkCoord, false);
+                        counter = 0;
                     }
+
+
+
                     newChunk.Generates();
                 }
                 else

@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     private bool heavyAttack = false;
     private bool placed = false;
     private bool dodge = false;
+    private bool activateAbility = false;
     private static InputManager instance;
 
     private bool UIDown = false;
@@ -46,6 +47,20 @@ public class InputManager : MonoBehaviour
             moveDirection = context.ReadValue<Vector2>();
         }
     }
+
+    public void ActivateAbilityPressed(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            activateAbility = true;
+        }
+        else if(context.canceled)
+        {
+            activateAbility = false;
+        }
+    }
+
+
 
     public void ESCPressed(InputAction.CallbackContext context)
     {
@@ -165,6 +180,13 @@ public class InputManager : MonoBehaviour
         esc = false;
         return result;
     }
+
+    public bool GetActivateAbilityPressed()
+    {
+        bool result = activateAbility;
+        activateAbility = false;
+        return result;
+    }
     public bool GetInteractPressed()
     {
         bool result = interactPressed;
@@ -208,6 +230,11 @@ public class InputManager : MonoBehaviour
     public void RegisterESCPressed()
     {
         esc = false;
+    }
+
+    public void RegisterActivateAbilityPressed()
+    {
+        activateAbility = false;
     }
 
     public bool GetLightAttackPressed()

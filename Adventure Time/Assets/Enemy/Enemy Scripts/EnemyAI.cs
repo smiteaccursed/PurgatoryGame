@@ -39,6 +39,7 @@ public class EnemyAI : MonoBehaviour
     public float attackAnimDuration = 0.5f;
     private Collider2D meleeCollider;
     private SpriteRenderer meleeRenderer;
+    public bool isFrozen;
 
 
     private void Start()
@@ -67,35 +68,16 @@ public class EnemyAI : MonoBehaviour
 
         TimeManger.OnNightStateChanged += HandleNightStateChanged;
         behavior?.OnNightChange(this, TimeManger.GetInstance().isLights);
+        TimeManger.OnTimeStop += Freeze;
+        TimeManger.OnTimeResume += Unfreeze;
     }
 
     void Update()
     {
+        if (isFrozen) return;
+
         behavior.Execute(this);
 
-        //if (TargetInSight())
-        //{
-        //    lastSeenPosition = target.position;
-        //    moveDirection = (lastSeenPosition - (Vector2)transform.position).normalized;
-        //    if (Vector2.Distance(transform.position, target.position) <= attackRange && Time.time - lastAttackTime > attackCooldown)
-        //    {
-        //        Attack();
-
-        //    }
-        //    else
-        //    {
-        //        MoveTo(lastSeenPosition, moveDirection);
-        //    }
-        //}
-        //else if (Vector2.Distance(transform.position, lastSeenPosition) > 0.5f)
-        //{
-        //    MoveTo(lastSeenPosition, moveDirection);
-        //}
-        //else
-        //{
-        //    animator.SetFloat("Speed", 0);
-        //    Wander();
-        //}
     }
 
     public bool TargetInSight()
@@ -228,6 +210,29 @@ public class EnemyAI : MonoBehaviour
     private void HandleNightStateChanged(bool isNight)
     {
         behavior?.OnNightChange(this, isNight);
+    }
+
+    void Freeze()
+    {
+        if (this == null || gameObject == null) return;  
+        if (animator == null) return;  
+        isFrozen = true;
+        animator.speed = 0f;
+        rb.velocity = Vector2.zero;
+    }
+
+    void Unfreeze()
+    {
+        isFrozen = false;
+        if (this == null || gameObject == null) return;  
+        if (animator == null) return;  
+        animator.speed = 1f;
+    }
+    ~EnemyAI()
+    {
+        TimeManger.OnNightStateChanged -= HandleNightStateChanged;
+        TimeManger.OnTimeStop -= Freeze;
+        TimeManger.OnTimeResume -= Unfreeze;
     }
 }
  

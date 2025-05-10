@@ -228,6 +228,17 @@ public class Entity
             GameObject go = GameObject.Instantiate(prefab, spawnpos, Quaternion.identity);
             go.name = name;
             go.transform.SetParent(chunk.transform.Find("Entities"));
+            if(DataManager.Instance.isExist)
+            {
+                PlayerData pd = DataManager.Instance.saveData;
+                foreach (var statue in pd.entities.statueData)
+                {
+                    if (name == statue)
+                    {
+                        go.transform.Find("Trigger").gameObject.SetActive(false);
+                    }
+                }
+            }
         }
     }
 }
