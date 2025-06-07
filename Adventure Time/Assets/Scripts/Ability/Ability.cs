@@ -7,6 +7,7 @@ public abstract class Ability : ScriptableObject
     public int id;
     public string abilityName;
     public Sprite icon;
+    public string description;
 }
 public abstract class PassiveAbility : Ability
 {

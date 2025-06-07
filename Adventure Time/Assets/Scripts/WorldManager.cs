@@ -22,7 +22,7 @@ public class WorldManager : MonoBehaviour
     private static WorldManager instance;
     private StructureManager structures = new StructureManager();
     private StructureManager hubStuct = new StructureManager();
-    private int counter = 0;
+ 
     public Material material4Tilemap;
     public Transform parentObject;
 
@@ -119,7 +119,7 @@ public class WorldManager : MonoBehaviour
         private int chunkSize; // размер чанка
         private TileArray tileManager; // Надо будет попробовать удалять из памяти при окночательной генерации ( хотя как сделать сохранения ....?)
         private int seed;
-        private int[,] wallsMap; // битовая карта с запасом на 1 блок 
+        public int[,] wallsMap; // битовая карта с запасом на 1 блок 
         public bool isPreload = false;
         private GameObject chunkObject;
         public SpriteData[] SpriteArr;
@@ -325,24 +325,7 @@ public class WorldManager : MonoBehaviour
 
             return false;
         }
-        public void Print2DArray(int[,] array)
-        {
-            string row = "";
-            // Перебираем все строки массива
-            for (int i = 0; i < array.GetLength(0); i++)
-            {
-                 // Строка для хранения значений текущей строки
-
-                // Перебираем все столбцы текущей строки
-                for (int j = 0; j < array.GetLength(1); j++)
-                {
-                    row += array[i, j] + " "; // Добавляем значение в строку с табуляцией
-                }
-                row += "\n";
-                 // Выводим строку
-            }
-            //Debug.Log(row);
-        }
+         
 
 
         private void UpdateTileSprite(Vector2Int tileCoord)
@@ -376,19 +359,13 @@ public class WorldManager : MonoBehaviour
                 }
             }
         }
-        public async void ChunkPreGen(int[][] structMap, SpriteData[] StructSprites, bool shift, List<Entity> entities)
+
+        public async void ChunkPreGen(int[][] structMap, SpriteData[] StructSprites, int shift, List<Entity> entities)
         {
-            //Debug.Log("Запуск очистки чанка");
-            //ClearChunk();
-            //Debug.Log("Чанк очищен, запуск терраформирования");
+          
             SpriteArr = StructSprites;
             wallsMap = new int[chunkSize + 2, chunkSize + 2];
-           // Debug.Log("Запуск разметки");
             await WallGeneration();
-           // Debug.Log("Разметка структуры");
-            int tempShift = 2;
-            if (shift)
-                tempShift = 1;
             await Task.Run(() =>
             {
                 for (int i = 0; i < structMap.Length; i++)
@@ -397,7 +374,7 @@ public class WorldManager : MonoBehaviour
                     {
                         if (structMap[i][j] >= 0)
                         {
-                            wallsMap[i + tempShift, j + tempShift] = -1 * structMap[i][j];
+                            wallsMap[i + shift, j + shift] = -1 * structMap[i][j];
                         }
                     }
                 }
@@ -406,9 +383,10 @@ public class WorldManager : MonoBehaviour
             int index = 0;
             foreach (var ent in entities)
             { 
-                Vector2Int tp = new Vector2Int(Position.x*16 + tempShift + ent.position.x, Position.y*16 + tempShift + ent.position.y);
+                Vector2Int tp = new Vector2Int(Position.x*16 + shift + ent.position.x -1, Position.y*16 + shift + ent.position.y -1);
                 string name = $"S{Position.x}.{Position.y}.{index}";
                 index++;
+
                 ent.SpawnEntity(tp, name, chunkObject);
                 //Debug.Log("Spawn ent " + name);
             }
@@ -533,7 +511,7 @@ public class WorldManager : MonoBehaviour
     {
         instance = this;
         lastPlayerPosition = player.transform.position;
-        UnityMainThreadDispatcher.Instance();
+        //UnityMainThreadDispatcher.Instance();
 
         if(DataManager.Instance.isExist)
         {
@@ -555,12 +533,14 @@ public class WorldManager : MonoBehaviour
         hubStuct.ChunkingAll();
 
 
-        GenerateChunk(new Vector2Int(0, 0), hubStuct.GetStructureByName("Hub 0 0"));
-        GenerateChunk(new Vector2Int(0, -1), hubStuct.GetStructureByName("Hub 0 -1"));
-        GenerateChunk(new Vector2Int(-1, -1), hubStuct.GetStructureByName("Hub -1 -1"));
-        GenerateChunk(new Vector2Int(-1, 0), hubStuct.GetStructureByName("Hub -1 0"));
+        GenerateChunk(new Vector2Int(0, 0), hubStuct.GetStructureByName("Hub 0 0"), 0);
+        GenerateChunk(new Vector2Int(0, -1), hubStuct.GetStructureByName("Hub 0 -1"), 0);
+        GenerateChunk(new Vector2Int(-1, -1), hubStuct.GetStructureByName("Hub -1 -1"), 0);
+        GenerateChunk(new Vector2Int(-1, 0), hubStuct.GetStructureByName("Hub -1 0"), 0);
 
         GenerateChunks();
+
+        LoadingController.Instance.IsWorld = true;
     }
 
     void Update()
@@ -654,11 +634,11 @@ public class WorldManager : MonoBehaviour
                     chunks[chunkCoord] = newChunk;
                     int localSeed = seed + chunkCoord.x * 73856093 + chunkCoord.y * 19349663;
                     System.Random rng = new System.Random(localSeed);
-                    if (rng.Next(0, 5) == 0) // 10% вероятность. Псевдорандом
+                    if (rng.Next(0, 5) == 0) 
                     {
-                        Debug.Log($"Structure spawned at chunk: ({chunkCoord.x}, {chunkCoord.y})");
-                        structures.GetRndStruct().SpawnStruct(chunkCoord, false);
-                        counter = 0;
+                        //Debug.Log($"Structure spawned at chunk: ({chunkCoord.x}, {chunkCoord.y})");
+                        structures.GetRndStruct().SpawnStruct(chunkCoord, 2);
+ 
                     }
 
 
@@ -706,7 +686,7 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    void GenerateChunk(Vector2Int coords, StructureData structure)
+    void GenerateChunk(Vector2Int coords, StructureData structure, int shift)
     {
         Vector2Int chunkCoord =coords;
         GameObject chunkObject = new GameObject("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y + " )");
@@ -724,10 +704,25 @@ public class WorldManager : MonoBehaviour
         renderer.sortingOrder = -1;
         Chunk newChunk = new Chunk(chunkCoord, newGrassTilemap, WallPrefab, chunkSize, tileManager, seed, chunkObject);
         chunks[chunkCoord] = newChunk;
-        structure.SpawnStruct(chunkCoord, true);
-        Debug.Log($"{structure.name} - создан ");
+        structure.SpawnStruct(chunkCoord, shift);
+        
+        //Debug.Log($"{structure.name} - создан ");
         newChunk.Generates();
-        Debug.Log("Генерируем чанк по шаблону");
+        Debug.Log("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y + " )");
+        Print2DArray(newChunk.wallsMap);
+        //Debug.Log("Генерируем чанк по шаблону");
     }
-
+    public void Print2DArray(int[,] array)
+    {
+        string row = "";
+        for (int i = 0; i < array.GetLength(0); i++)
+        {
+            for (int j = 0; j < array.GetLength(1); j++)
+            {
+                row += array[i, j] + " "; 
+            }
+            row += "\n";
+        }
+        Debug.Log(row);
+    }
 }

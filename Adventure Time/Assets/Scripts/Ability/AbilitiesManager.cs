@@ -20,6 +20,7 @@ public class AbilitiesManager : MonoBehaviour
                 RecreateAbility(ability.pos, ability.name, ability.ID);
             }
         }
+        LoadingController.Instance.IsAbility = true;
     }
 
     public static AbilitiesManager Instance
@@ -77,18 +78,22 @@ public class AbilitiesManager : MonoBehaviour
         {
             Debug.LogWarning("Ќет доступных способностей дл€ выбора!");
         }
-
-         
     }
 
     public ScriptableObject FindAbilityById(int id)
     {
-        if (id%2!=0)
-            return activeAbilities.Find(a => a.id == id);
-        else if (id % 2 == 0)
+        ScriptableObject temp = passiveAbilities.Find(a => a.id == id);
+        if (passiveAbilities.Find(p => p.id == id) != null)
+        {
             return passiveAbilities.Find(p => p.id == id);
-        return null;
+        }
+        else if (activeAbilities.Find(a => a.id == id) != null)
+        {
+            return activeAbilities.Find(a => a.id == id);
+        }
+        else
+        {
+            return null;
+        }
     }
-
-
 }

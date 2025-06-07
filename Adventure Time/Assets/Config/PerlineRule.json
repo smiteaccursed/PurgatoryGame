@@ -52,14 +52,14 @@
             "variantWeights": [
                 {"name": "TX Tileset Wall_24", "weight": 1}
             ],
-            "bitMask": [22,119,30,62, 158, 150,87, 23, 151, 182, 190, 183, 86]
+            "bitMask": [22,119,118,30,54,55,62, 158, 150,87, 23, 151, 182, 190, 183, 86]
         },
         {
             "name": "LeftUp", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_0", "weight": 1}
             ],
-            "bitMask": [208,241,218,217,220, 209, 240, 244, 212, 210, 242,216]
+            "bitMask": [208,211, 213,243,245 ,241,218,217,220, 209, 240, 244, 212, 210, 242,216]
         },
         {
             "name": "MidUp", 
@@ -73,14 +73,14 @@
             "variantWeights": [
                 {"name": "TX Tileset Wall_2", "weight": 1}
             ],
-            "bitMask": [104,237,121, 109, 234,105,236, 234, 120, 232, 233, 238, 124,108]
+            "bitMask": [104,106,122,237,110,121, 109, 234,105,236, 234, 120, 232, 233, 238, 124,108]
         },
         {
             "name": "LeftMid", 
             "variantWeights": [
                 {"name": "TX Tileset Wall_8", "weight": 1}
             ],
-            "bitMask": [214,215, 247, 222, 246]
+            "bitMask": [214,215, 247, 222, 246, 96]
         },
         {
             "name": "LeftMidRound", 
@@ -115,7 +115,7 @@
             "variantWeights": [
                 {"name": "TX Tileset Wall_26", "weight": 1}
             ],
-            "bitMask": [11,91,175,59, 27, 171, 139, 15, 43, 203, 47, 79, 155]
+            "bitMask": [11,75, 91,143,175,59, 27, 171, 139, 15, 43, 203, 47, 79, 155]
         },
         {
             "name": "BUF", 
@@ -132,7 +132,6 @@
                 {"name": "TX Props_39", "weight": 1},
                 {"name": "TX Props_40", "weight": 1},
                 {"name": "TX Props_41", "weight": 1},
-                {"name": "TX Props_43", "weight": 1},
                 {"name": "TX Props_44", "weight": 1},
                 {"name": "TX Props_45", "weight": 1},
                 {"name": "TX Props_46", "weight": 1},

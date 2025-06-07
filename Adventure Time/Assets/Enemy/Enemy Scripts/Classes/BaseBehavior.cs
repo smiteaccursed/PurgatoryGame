@@ -51,6 +51,11 @@ public class BaseBehavior : IEnemyBehavior
     {
 
     }
+
+    public virtual void OnHit(EnemyAI enemy)
+    {
+
+    }
     public virtual Action<EnemyAI, bool> OnNightChange => (enemy, isNight) =>
     {
 

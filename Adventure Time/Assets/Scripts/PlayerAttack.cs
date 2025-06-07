@@ -1,18 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public GameObject Melee; // attack location
+    public GameObject Melee;
 
-    private bool isLAttacking;
-    public bool isAttaking;
+    public float startTimeAttack = 1.0f;  
+    public float attackAnimDuration = 0.5f;  
 
-    public float attackTime;
-    public float startTimeAttack;
-
-   //public LayerMask enemies;
+    public bool isAttacking { get; private set; }  
+    private bool canAttack = true;  
 
     private Animator animator;
     private Collider2D meleeCollider;
@@ -34,62 +31,50 @@ public class PlayerAttack : MonoBehaviour
         meleeRenderer = Melee.GetComponent<SpriteRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
- 
-        if(attackTime <=0)
+        if (canAttack && InputManager.GetInstance() != null && InputManager.GetInstance().GetLightAttackPressed())
         {
-            if (InputManager.GetInstance() != null && InputManager.GetInstance().GetLightAttackPressed())
-            {
-                OnLightAttack();
-                attackTime = startTimeAttack;
-            }
-            else
-            {
-                DisableAttackFlag();
-            }
-        }
-        else
-        {
-            attackTime -= Time.deltaTime;
-            DisableLAFlags();
+            StartCoroutine(AttackRoutine());
         }
     }
+
+    private IEnumerator AttackRoutine()
+    {
+        canAttack = false;
+        isAttacking = true;
+
+        animator.SetTrigger("LightAttack");
+        meleeRenderer.enabled = true;
+
+        meleeCollider.enabled = true;
+
+
+        Vector2 originalOffset = meleeCollider.offset;
+        meleeCollider.offset += Vector2.right * 0.01f;
+        yield return null;
+        meleeCollider.offset = originalOffset;
+        //meleeRenderer.enabled = false;
+        meleeCollider.enabled = false;
+        yield return new WaitForSeconds(attackAnimDuration);
+
+        isAttacking = false;
+ 
+
+        float remainingDelay = Mathf.Max(0, startTimeAttack - attackAnimDuration);
+        yield return new WaitForSeconds(remainingDelay);
+
+        canAttack = true;
+    }
+
 
     public static PlayerAttack GetInstance()
     {
         return instance;
     }
 
-    void OnLightAttack()
-    {
-        if (!isLAttacking)
-        {
-            meleeCollider.enabled = false;
-            meleeCollider.enabled = true;
-            //meleeRenderer.enabled = true;
-            isLAttacking = true;
-            isAttaking = true;
-            animator.SetBool("LightAttack", true);
-        }
-    }
-
-    void DisableLAFlags()
-    {
-        isLAttacking = false;
- 
-        animator.SetBool("LightAttack", false);
-    }
-    
-    void DisableAttackFlag()
-    {
-        isAttaking = false;
-        meleeCollider.enabled = false;
-        meleeRenderer.enabled = false;
-    }
-
     public bool GetAttacking()
     {
-        return isAttaking;
+        return isAttacking;
     }
 }

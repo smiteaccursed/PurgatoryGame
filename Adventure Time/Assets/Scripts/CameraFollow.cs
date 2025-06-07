@@ -10,20 +10,42 @@ namespace Cainos.PixelArtTopDown_Basic
         public Transform target;
         public float lerpSpeed = 20.0f;
 
-        private Vector3 offset;
-
-        private Vector3 targetPos;
+        public Vector3 offset;
+        public Vector3 targetPos;
+        public bool isLoading = false;
 
         private void Start()
         {
-            if (target == null) return;
+            isLoading = false;
+            if (target == null)
+            {
+                GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+                if (playerObj != null)
+                {
+                    target = playerObj.transform;
+                    LoadingController.Instance.IsCamera = true;
+                }
+            }
+            else
+            {
+                offset = new Vector3(0, 0, -10);
+            }
 
-            offset = transform.position - target.position;
         }
 
         private void Update()
         {
-            if (target == null) return;
+            if (target == null)
+            {
+                return;
+            }
+            else if(!isLoading)
+            {
+                targetPos = target.position + offset;
+                transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
+                LoadingController.Instance.IsCamera = true;
+                isLoading = true;
+            }
 
             targetPos = target.position + offset;
             transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);

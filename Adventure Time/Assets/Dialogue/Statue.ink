@@ -35,7 +35,7 @@ EXTERNAL give_art()
 
 == сила_бонус ==
 просишь, что сокрушит твоих врагов.
-~ apply_boost("damage", 20)
+~ apply_boost("damage", 2)
 ~ destroy_statue()
 -> конец_молитвы
 

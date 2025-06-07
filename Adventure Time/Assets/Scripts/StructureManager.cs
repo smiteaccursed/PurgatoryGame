@@ -138,35 +138,37 @@ public class StructureData
         Debug.Log($"{name} {chunkCols}  {chunkRows} chunking result");
 
     }
-    public void SpawnStruct(Vector2Int cords, bool Shift)
+    public void SpawnStruct(Vector2Int cords, int Shift)
     {
-        Debug.Log("Готовность к спавну");
+        //Debug.Log("Готовность к спавну");
         int startX = cords.x;
         int startY = cords.y;
         WorldManager wm = WorldManager.GetInstance();
-        for (int i = 0; i < chunkCols; i++) // Индексы чанков по столбцам
-        {
-            for (int j = 0; j < chunkRows; j++) // Индексы чанков по строкам
-            {
-                int chunkX = startX + i;
-                int chunkY = startY + j;
+        WorldManager.Chunk chnk = wm.GetChunkByCoords(new Vector2Int(startX, startY));
+        chnk.ChunkPreGen(maskData, spriteData.SpriteArr, Shift, entities);
+        //for (int i = 0; i < chunkCols; i++) // Индексы чанков по столбцам
+        //{
+        //    for (int j = 0; j < chunkRows; j++) // Индексы чанков по строкам
+        //    {
+        //        int chunkX = startX + i;
+        //        int chunkY = startY + j;
 
-                Debug.Log("Поиск чанка");
-                WorldManager.Chunk chnk = wm.GetChunkByCoords(new Vector2Int(chunkX, chunkY));
+        //        Debug.Log("Поиск чанка");
+        //        WorldManager.Chunk chnk = wm.GetChunkByCoords(new Vector2Int(chunkX, chunkY));
 
-                if (chnk != null)
-                {
-                    Debug.Log($"Чанк найден, запуск генерации, сущностьей " );
-                    chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr, Shift, entities);
-                    //PrintChunkStruct(chunkStruct[i][j]);
-                    //chnk.ChunkPreGen(maskData, spriteData.SpriteArr);
-                }
-                else
-                {
-                    Debug.Log($"Чанк на позиции ({chunkX}, {chunkY}) не найден!");
-                }
-            }
-        }
+        //        if (chnk != null)
+        //        {
+        //            //Debug.Log($"Чанк найден, запуск генерации, сущностьей " );
+        //            chnk.ChunkPreGen(chunkStruct[i][j], spriteData.SpriteArr, Shift, entities);
+        //            //PrintChunkStruct(chunkStruct[i][j]);
+        //            //chnk.ChunkPreGen(maskData, spriteData.SpriteArr);
+        //        }
+        //        else
+        //        {
+        //            Debug.Log($"Чанк на позиции ({chunkX}, {chunkY}) не найден!");
+        //        }
+        //    }
+        //}
     }
 
     void PrintChunkStruct(int[][] chunkStruct)
@@ -183,25 +185,25 @@ public class StructureData
 
     public void GetMaskData()
     {
-        maskData = new int[size + 2][];
-        for (int i = 0; i < size + 2; i++)
+        maskData = new int[size][];
+        for (int i = 0; i < size ; i++)
         {
-            maskData[i] = new int[size + 2];
+            maskData[i] = new int[size];
         }
 
-        Debug.Log("rawData initialization: " + (rawData != null ? "Initialized" : "Null") + "size" + (size +2));
+        Debug.Log("rawData initialization: " + (rawData != null ? "Initialized " : "Null ") + "size " + (size));
 
-        // Заполняем центральную часть массива значениями из rawData
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                maskData[j + 1][size - i] = rawData[i * size + j];
+                //Debug.Log($"{i} {j} {i * size + j}");
+                maskData[j][size - i - 1] = rawData[i * size + j];
             }
         }
 
         string output = "";
-        for (int i = 0; i < size + 2; i++)
+        for (int i = 0; i < size; i++)
         {
             output += string.Join(", ", maskData[i]) + "\n"; // Добавляем строку массива
         }
@@ -285,7 +287,7 @@ public class StructSpriteData
         }
         else
         {
-            Debug.Log($"{sprites.Count}");
+           // Debug.Log($"{sprites.Count}");
             foreach (var sprite in sprites)
             {
                 foreach (var i in sprite.bitMask)

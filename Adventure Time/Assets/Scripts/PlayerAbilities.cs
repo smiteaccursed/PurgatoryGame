@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 public class PlayerAbilities : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerAbilities : MonoBehaviour
     public AudioSource source;
     private GameObject player;
     public GameObject icon;
+    public TextMeshProUGUI abilityName;
+    public TextMeshProUGUI abilityDescriprion;
     private void Start()
     {
         player = gameObject;
@@ -44,6 +47,7 @@ public class PlayerAbilities : MonoBehaviour
     {
         passiveAbilities.Add(ability);
         ability.Apply(player);
+        StartCoroutine(ShowAbilityInfo(ability.abilityName, ability.description));
     }
 
     public void SetActiveAbility(ActiveAbility ability)
@@ -51,6 +55,7 @@ public class PlayerAbilities : MonoBehaviour
         Image img = icon.GetComponent<Image>();
         img.sprite = ability.icon;
         activeAbility = ability;
+        StartCoroutine(ShowAbilityInfo(ability.abilityName, ability.description));
     }
 
     private void Update()
@@ -65,10 +70,19 @@ public class PlayerAbilities : MonoBehaviour
                 source.PlayOneShot(activeAbility.activationSound);
             }
             activeAbility.StartAbility(gameObject); ;
-            //
-            //Debug.Log("¿¡»À ¿¿¿¿¿¿¿");
         }
 
+    }
+
+    IEnumerator ShowAbilityInfo(string name, string desc)
+    {
+        abilityName.text = name;
+        abilityDescriprion.text = desc;
+
+        yield return new WaitForSeconds(3f);
+
+        abilityName.text = "";
+        abilityDescriprion.text = "";
     }
 }
 

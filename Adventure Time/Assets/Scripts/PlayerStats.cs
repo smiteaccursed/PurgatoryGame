@@ -101,6 +101,7 @@ public class PlayerStats : MonoBehaviour
         SwordInfoUpdate();
         StartCoroutine(RegenerateMana());
         StartCoroutine(RegenerateHP());
+        LoadingController.Instance.IsPlayer = true;
     }
 
     public void changeHP(float mult)
@@ -167,8 +168,12 @@ public class PlayerStats : MonoBehaviour
     public void GetDamage(float dmg)
     {
         hp -= dmg;
-        hp = Mathf.Round(hp * 10f) / 10f;
         HealtBarUpdate();
+        if (hp<=0)
+        {
+            hp = 0;
+            GameOverController.Instance.DeathScreen();
+        }
     }
     public void GetExpReward(int enemyLevel)
     {

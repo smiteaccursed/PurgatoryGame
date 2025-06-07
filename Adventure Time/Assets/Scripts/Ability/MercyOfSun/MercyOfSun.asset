@@ -15,3 +15,5 @@ MonoBehaviour:
   id: 2
   abilityName: "\u041C\u0438\u043B\u043E\u0441\u0442\u044C \u0421\u043E\u043B\u043D\u0446\u0430"
   icon: {fileID: 21300000, guid: fe2783e079016f24e96b8f6413c36055, type: 3}
+  description: "\u0421\u043E\u043B\u043D\u0446\u0435 \u043D\u0430\u043F\u0438\u0442\u044B\u0432\u0430\u0435\u0442
+    \u0441\u0438\u043B\u043E\u0439"

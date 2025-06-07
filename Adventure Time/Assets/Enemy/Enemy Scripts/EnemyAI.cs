@@ -50,11 +50,11 @@ public class EnemyAI : MonoBehaviour
         lastSeenPosition = transform.position;
 
         if(behavior == null)
-            SetBehavior(new VampireBehavior());
+            SetBehavior(new BaseBehavior());
 
         level = Mathf.RoundToInt(rb.position.magnitude / 16);
         maxHP = maxHP * Mathf.Pow(1.035f, level);
-
+        enemyWeapon.HittingPlayer += HitPlayer;
         enemyWeapon.damage *= Mathf.Pow(1.02f, level);
         damage = enemyWeapon.damage;
         baseDMG = damage;
@@ -233,6 +233,12 @@ public class EnemyAI : MonoBehaviour
         TimeManger.OnNightStateChanged -= HandleNightStateChanged;
         TimeManger.OnTimeStop -= Freeze;
         TimeManger.OnTimeResume -= Unfreeze;
+        enemyWeapon.HittingPlayer -= HitPlayer;
+    }
+
+    public void HitPlayer()
+    {
+        behavior?.OnHit(this);
     }
 }
  

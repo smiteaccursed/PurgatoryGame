@@ -15,5 +15,7 @@ MonoBehaviour:
   id: 3
   abilityName: Kamui
   icon: {fileID: 21300000, guid: 6955cfe50ba3eae40a9386a1c878ab4c, type: 3}
+  description: "\u0412\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C
+    \u0443\u0439\u0442\u0438 \u043E\u0442 \u0432\u0441\u0435\u0445 \u043F\u0440\u043E\u0431\u043B\u0435\u043C"
   activationSound: {fileID: 8300000, guid: 236e1391a1ccab14cbbe5aa7df9660d3, type: 3}
   manaCostPerSecond: 8
