@@ -12,6 +12,22 @@ public class PlayerAbilities : MonoBehaviour
     public GameObject icon;
     public TextMeshProUGUI abilityName;
     public TextMeshProUGUI abilityDescriprion;
+
+    private static PlayerAbilities Instance;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         player = gameObject;

@@ -193,6 +193,15 @@ public class EnemyAI : MonoBehaviour
         behavior = newBehavior;
     }
 
+    public void GetHealt(float health)
+    {
+        HP += health;
+        if(HP > maxHP)
+        {
+            HP = maxHP;
+        }
+        enemyUI.SetName();
+    }
     public void TakeDamage(float damage)
     {
         behavior?.OnHurt(this);

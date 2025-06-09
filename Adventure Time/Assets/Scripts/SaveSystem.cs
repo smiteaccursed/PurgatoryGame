@@ -67,7 +67,7 @@ public class SaveSystem : MonoBehaviour
 
         playerData.magicPoint = ps.magicPoint;
         playerData.mp = ps.mp;
-
+        playerData.startTimeAttack = ps.attackDelay;
         playerData.lvl = ps.lvl;
         playerData.currentEXP = ps.currentEXP;
         playerData.nextLVLEXP = ps.nextLVLEXP;
@@ -110,7 +110,7 @@ public class PlayerData
     public float currentEXP;
     public float nextLVLEXP;
     public float baseExp;
-
+    public float startTimeAttack;
     public float mp;
     public float magicPoint;
 

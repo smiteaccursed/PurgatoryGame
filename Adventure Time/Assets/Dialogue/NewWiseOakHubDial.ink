@@ -1,14 +1,19 @@
+EXTERNAL enterBossFight()
+
 -> main
 
 === main ===
-Which pokemon do you choose?
-    + [Charmander]
-        -> chosen("Charmander")
-    + [Bulbasaur]
-        -> chosen("Bulbasaur")
-    + [Squirtle]
-        -> chosen("Squirtle")
+Ты готов покинуть чистилище?
+    + [Да]
+        -> fight
+    + [Нет]
+        -> exit
 
-=== chosen(pokemon) ===
-You chose {pokemon}!
+=== fight  ===
+Сегодня я присоединюсь к охоте. Я ИДУ!
+~enterBossFight()
 -> END
+
+===exit===
+Ну ладно. Может в другой раз... 
+->END

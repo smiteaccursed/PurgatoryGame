@@ -23,4 +23,9 @@ public class VampireBehavior : BaseBehavior
             enemy.damage = enemy.baseDMG / 1.5f;
         }
     };
+
+    public override void OnHit(EnemyAI enemy)
+    {
+        enemy.GetHealt(enemy.damage);
+    }
 }

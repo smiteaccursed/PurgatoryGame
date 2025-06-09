@@ -31,6 +31,7 @@ public class PlayerStats : MonoBehaviour
     public GameObject SwordInfo;
     public GameObject SwordDelayInfo;
     public GameObject DashDelayInfo;
+    public GameObject blood;
 
     [Header("Связь с механиками")]
     public PlayerMovment movment;
@@ -77,7 +78,8 @@ public class PlayerStats : MonoBehaviour
             baseDMG = pd.baseDMG;
             weapon.damage = baseDMG * multDMG;
             damage = weapon.damage;
-            attackDelay = attack.startTimeAttack;
+            attackDelay = pd.startTimeAttack;
+            attack.startTimeAttack = attackDelay;
             hp = pd.hp;
             maxHP = pd.maxHP;
 
@@ -94,6 +96,7 @@ public class PlayerStats : MonoBehaviour
             baseDMG = weapon.damage;
             weapon.damage *= multDMG;
             damage = weapon.damage;
+            attackDelay = Mathf.Max(attack.attackAnimDuration, attack.startTimeAttack);
         }
         
 
@@ -150,6 +153,11 @@ public class PlayerStats : MonoBehaviour
     {
         float temp = Mathf.Round(mp * 10);
         mp = temp / 10;
+        if(mp>magicPoint)
+        {
+            mp = magicPoint;
+        }
+
         Transform fill = ManaBar.transform.Find("Fill");
         Vector3 scale = fill.localScale;
         scale.x = mp / magicPoint;
@@ -168,6 +176,7 @@ public class PlayerStats : MonoBehaviour
     public void GetDamage(float dmg)
     {
         hp -= dmg;
+        blood.GetComponent<BloodController>().ActivateBlood();
         HealtBarUpdate();
         if (hp<=0)
         {
@@ -238,5 +247,17 @@ public class PlayerStats : MonoBehaviour
 
             yield return delay;
         }
+    }
+
+    public void ChangeAttackDelay(float dl)
+    {
+        attackDelay += dl;
+        attack.startTimeAttack += dl;
+    }
+
+    public void AddMana(float mana)
+    {
+        mp += mana;
+        ManaBarUpdate();
     }
 }

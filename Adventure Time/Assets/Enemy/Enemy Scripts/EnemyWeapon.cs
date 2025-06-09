@@ -15,6 +15,5 @@ public class EnemyWeapon : MonoBehaviour
             playerStats.GetDamage(damage);
             HittingPlayer?.Invoke();
         }
-
     }
 }

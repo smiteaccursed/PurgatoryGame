@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CaveGeneration.unity
     guid: dc024f149c42c1a44b65f13a9f1b38ea
+  - enabled: 1
+    path: Assets/Scenes/BossFight.unity
+    guid: 8c8068a1bf64c344ca21acf63f3d8a1f
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: dc54049d45e09774fa94e6ebebb6dabd,
       type: 2}

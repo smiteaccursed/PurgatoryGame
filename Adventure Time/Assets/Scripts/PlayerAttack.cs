@@ -52,7 +52,7 @@ public class PlayerAttack : MonoBehaviour
 
         Vector2 originalOffset = meleeCollider.offset;
         meleeCollider.offset += Vector2.right * 0.01f;
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
         meleeCollider.offset = originalOffset;
         //meleeRenderer.enabled = false;
         meleeCollider.enabled = false;

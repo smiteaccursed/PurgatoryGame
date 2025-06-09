@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-
+using TMPro;
 
 public class TimeManger : MonoBehaviour
 {
 
     public static event Action<bool> OnNightStateChanged;
     public static event Action OnTimeStop;
-    public static event Action OnTimeResume; 
-
+    public static event Action OnTimeResume;
+    public TextMeshProUGUI text;
     public Volume ppv;
 
     public float tick; // Increasing the tick, increases second rate
@@ -49,6 +49,7 @@ public class TimeManger : MonoBehaviour
         hourRot = (hours +1)  * hourDeg;
         UpdateMin(minRot);
         UpdateHour(hourRot);
+        DaysUpdate(days);
         //lights[0].SetActive(false);
         isLights = false;
     }
@@ -86,6 +87,7 @@ public class TimeManger : MonoBehaviour
         {
             hours = 0;
             days += 1;
+            DaysUpdate(days);
             PlayerCampfire.Instance.ResetCampfireCount();
         }
         ControlPPV();
@@ -181,5 +183,10 @@ public class TimeManger : MonoBehaviour
     {
         tick = baseTick;
         OnTimeResume?.Invoke();
+    }
+
+    public void DaysUpdate(int day)
+    {
+        text.text = $"Δενό: {day}"; 
     }
 }

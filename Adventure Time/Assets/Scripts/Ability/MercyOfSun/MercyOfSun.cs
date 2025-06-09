@@ -7,12 +7,10 @@ public class MercyOfSun : PassiveAbility
 {
     public override void Apply(GameObject player)
     {
-         
         if (!player.TryGetComponent<MersyOfSunEffect>(out _))
         {
             Transform passiveAbilitiesParent = player.transform.Find("PassiveAbilities");
             passiveAbilitiesParent.gameObject.AddComponent<MersyOfSunEffect>();
-
         }
     }
 }

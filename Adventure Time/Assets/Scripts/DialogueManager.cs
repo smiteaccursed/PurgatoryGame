@@ -5,6 +5,8 @@ using TMPro;
 using Ink.Runtime;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class DialogueManager : MonoBehaviour
 {
@@ -101,11 +103,17 @@ public class DialogueManager : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON)
     {
+        TimeManger.GetInstance().TriggerTimeStop();
         currentStory = new Story(inkJSON.text);
         currentStory.BindExternalFunction("apply_boost", (string type, int value) => {
             ApplyPlayerBoost(type, value);
             Debug.Log($"Function 'apply_boost' called with type: {type}, value: {value}");
         });
+        currentStory.BindExternalFunction("enterBossFight", () =>
+        {
+            EnterToBoss();
+        }
+        );
         currentStory.BindExternalFunction("destroy_statue", () => {
             DestroyCurrentTrigger();
         });
@@ -147,7 +155,13 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void EnterToBoss()
+    {
+        Debug.Log("Ѕитва с боссом!");
+        //SaveSystem.Instance.SaveGame(SaveSystem.Instance.GetAllData());
+        SceneManager.LoadScene("BossFight");
 
+    }
     private void ExitDialogueMode()
     {
         dialogueIsPlaying = false;
@@ -157,6 +171,7 @@ public class DialogueManager : MonoBehaviour
             s.SetActive(true);
         }
         dialogueText.text = "";
+        TimeManger.GetInstance().TriggerTimeResume();
     }
 
     private void ContinueStory()

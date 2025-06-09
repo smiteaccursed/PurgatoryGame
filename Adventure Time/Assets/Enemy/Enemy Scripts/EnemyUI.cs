@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class EnemyUI: MonoBehaviour 
 {
-    public Text enemyUI;
+    public TextMeshProUGUI enemyUI;
     private EnemyAI enemyAI;
     private void Awake()
     {
-        enemyUI = GetComponentInChildren<Text>();
+        enemyUI = GetComponentInChildren<TextMeshProUGUI>();
         enemyAI = GetComponentInParent<EnemyAI>();
     }
 

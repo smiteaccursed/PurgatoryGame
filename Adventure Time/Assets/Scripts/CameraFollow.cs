@@ -16,6 +16,7 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void Start()
         {
+            offset = new Vector3(0, 0, -10);
             isLoading = false;
             if (target == null)
             {
@@ -25,10 +26,6 @@ namespace Cainos.PixelArtTopDown_Basic
                     target = playerObj.transform;
                     LoadingController.Instance.IsCamera = true;
                 }
-            }
-            else
-            {
-                offset = new Vector3(0, 0, -10);
             }
 
         }

@@ -115,7 +115,7 @@ public class WorldManager : MonoBehaviour
         public Tilemap grassTilemap; // ковер
         private bool grassCheck = false;
         public GameObject WallPrefab;
-        private Vector2Int Position; // коорды чанка
+        private Vector2Int Position; 
         private int chunkSize; // размер чанка
         private TileArray tileManager; // Надо будет попробовать удалять из памяти при окночательной генерации ( хотя как сделать сохранения ....?)
         private int seed;
@@ -185,9 +185,9 @@ public class WorldManager : MonoBehaviour
             if(!isPreload)
             {
                 await WallGeneration();
-                await PostGen();
+                await PostGen(); 
             }
-
+            System.Random rnd = new System.Random(seed + Position.x * 73856093 + Position.y * 19349663);
             await Task.Run(() =>
             {
                 for (int x = 0; x < chunkSize; x++)
@@ -246,7 +246,14 @@ public class WorldManager : MonoBehaviour
                 if (wallComponent != null)
                 {
                     wallComponent.bit = wallData.mask;
-                    if(tileManager.IsBuf(wallData.mask))
+                    if (wallData.mask == 255)
+                    {
+                        if (rnd.Next(0, 4) == 1)
+                        {
+                            PlantController.Instance.SpawnRNDPlant(wallData.position, chunkObject.transform.Find("Plants"));
+                        }
+                    }
+                    if (tileManager.IsBuf(wallData.mask))
                     {
                         wallComponent.isbuf = true;
                     }
@@ -620,6 +627,8 @@ public class WorldManager : MonoBehaviour
                     GameObject chunkObject = new GameObject("Chunk (" + chunkCoord.x + " ; " + chunkCoord.y+" )");
                     chunkObject.transform.SetParent(parentObject);
                     GameObject blocks = new GameObject("Blocks");
+                    GameObject plants = new GameObject("Plants");
+                    plants.transform.SetParent(chunkObject.transform);
                     GameObject ent = new GameObject("Entities");
                     GameObject enemies = new GameObject("Enemies");
                     blocks.transform.SetParent(chunkObject.transform);
@@ -694,6 +703,8 @@ public class WorldManager : MonoBehaviour
         GameObject ent = new GameObject("Entities");
         GameObject enemies = new GameObject("Enemies");
         blocks.transform.SetParent(chunkObject.transform);
+        GameObject plants = new GameObject("Plants");
+        plants.transform.SetParent(chunkObject.transform);
         ent.transform.SetParent(chunkObject.transform);
         enemies.transform.SetParent(chunkObject.transform);
         chunkObject.transform.SetParent(parentObject);
