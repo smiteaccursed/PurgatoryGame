@@ -7,14 +7,14 @@ public class HeavySwordEffect : MonoBehaviour
     private PlayerStats stats;
     private void Start()
     {
-        stats = FindObjectOfType<PlayerStats>();
+        stats = FindFirstObjectByType<PlayerStats>();
         if (stats == null)
         {
             Debug.LogError("PlayerStats not found on object!");
             return;
         }
 
-        stats.ChangeDamage(20);
+        stats.ChangeAbilityDamage(20);
         stats.ChangeAttackDelay(2f);
         
     }

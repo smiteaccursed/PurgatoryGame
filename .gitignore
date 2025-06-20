@@ -24,7 +24,9 @@ ExportedObj/
 *.pdb
 *.opendb
 *.VC.db
-
+*.cs.meta
+*.prefab.meta
+*.unity.meta
 # Unity auto-generated files
 .unitypackage
 

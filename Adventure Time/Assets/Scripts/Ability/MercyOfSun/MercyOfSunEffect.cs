@@ -8,7 +8,7 @@ public class MersyOfSunEffect : MonoBehaviour
 
     private void Start()
     {
-        stats = FindObjectOfType<PlayerStats>();
+        stats = FindFirstObjectByType<PlayerStats>();
         if (stats == null)
         {
             Debug.LogError("PlayerStats not found on object!");

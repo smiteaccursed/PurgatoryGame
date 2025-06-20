@@ -30,7 +30,6 @@ public class THEWORLDEffect : MonoBehaviour
             manaDrainCoroutine = StartCoroutine(ManaDrain(ability));
         }
     }
-
     public void ForceStop()
     {
         if (!isActive) return;

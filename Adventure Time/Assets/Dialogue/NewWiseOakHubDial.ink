@@ -12,8 +12,8 @@ EXTERNAL enterBossFight()
 === fight  ===
 Сегодня я присоединюсь к охоте. Я ИДУ!
 ~enterBossFight()
--> END
+->DONE
 
 ===exit===
 Ну ладно. Может в другой раз... 
-->END
+->DONE

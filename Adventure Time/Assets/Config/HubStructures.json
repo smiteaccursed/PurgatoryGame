@@ -85,7 +85,18 @@
                     "bitMask": [0]
                 }
 
-            ]
+            ],
+            "entities":
+        [
+            {
+            
+                "name": "Statue",
+                "prefabPath": "Statue",
+                "position":{"x":2, "y":2}
+                
+            }
+        ]
+
         }
         },
         {
